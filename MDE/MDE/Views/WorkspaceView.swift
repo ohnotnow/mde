@@ -1,4 +1,6 @@
+import AppKit
 import SwiftUI
+import WebKit
 
 struct WorkspaceView: View {
     @Binding var document: MarkdownDocument
@@ -103,6 +105,10 @@ struct WorkspaceView: View {
             editorEngine.makeEditorView(document: $document, settings: settings)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
+            if let customCSS = editorEngine.customCSS(for: settings) {
+                WebViewStyleOverlay(css: customCSS)
+            }
+
             FileDropOverlay(
                 onDrop: onOpenDroppedFile,
                 onTargetChange: { targeted in
@@ -119,5 +125,132 @@ struct WorkspaceView: View {
 
     private var documentTitle: String {
         document.isDirty ? "\(document.displayName) •" : document.displayName
+    }
+}
+
+struct WebViewStyleOverlay: NSViewRepresentable {
+    let css: String
+
+    func makeNSView(context: Context) -> WebViewStyleInjectionView {
+        let view = WebViewStyleInjectionView()
+        view.css = css
+        return view
+    }
+
+    func updateNSView(_ nsView: WebViewStyleInjectionView, context: Context) {
+        nsView.css = css
+    }
+}
+
+final class WebViewStyleInjectionView: NSView {
+    var css = "" {
+        didSet {
+            scheduleInjection()
+        }
+    }
+
+    private let styleElementID = "mde-custom-editor-style"
+    private var pendingInjection = false
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        nil
+    }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        scheduleInjection()
+    }
+
+    override func viewDidMoveToSuperview() {
+        super.viewDidMoveToSuperview()
+        scheduleInjection()
+    }
+
+    override func layout() {
+        super.layout()
+        scheduleInjection()
+    }
+
+    private func scheduleInjection() {
+        guard !pendingInjection else {
+            return
+        }
+
+        pendingInjection = true
+        DispatchQueue.main.async { [weak self] in
+            self?.pendingInjection = false
+            self?.injectCSS(retryCount: 8)
+        }
+    }
+
+    private func injectCSS(retryCount: Int) {
+        guard let webView = findNearbyWebView() else {
+            guard retryCount > 0 else {
+                return
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                self?.injectCSS(retryCount: retryCount - 1)
+            }
+            return
+        }
+
+        let script = """
+        (function() {
+          const styleId = \(styleElementID.javaScriptQuoted);
+          const css = \(css.javaScriptQuoted);
+          let style = document.getElementById(styleId);
+          if (!style) {
+            style = document.createElement('style');
+            style.id = styleId;
+            document.head.appendChild(style);
+          }
+          if (style.textContent !== css) {
+            style.textContent = css;
+          }
+        })();
+        """
+
+        webView.evaluateJavaScript(script, completionHandler: nil)
+    }
+
+    private func findNearbyWebView() -> WKWebView? {
+        var currentView: NSView? = self
+
+        while let view = currentView {
+            if let webView = view.subviews.compactMap(findWebView(in:)).first {
+                return webView
+            }
+
+            currentView = view.superview
+        }
+
+        return nil
+    }
+
+    private func findWebView(in view: NSView) -> WKWebView? {
+        if let webView = view as? WKWebView {
+            return webView
+        }
+
+        for subview in view.subviews {
+            if let webView = findWebView(in: subview) {
+                return webView
+            }
+        }
+
+        return nil
+    }
+}
+
+private extension String {
+    var javaScriptQuoted: String {
+        let escaped = self
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\r", with: "")
+            .replacingOccurrences(of: "\n", with: "\\n")
+
+        return "\"\(escaped)\""
     }
 }

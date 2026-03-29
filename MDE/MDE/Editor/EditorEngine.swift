@@ -25,4 +25,12 @@ protocol EditorEngine {
     ) -> AnyView
 
     func apply(_ command: EditorCommand, to document: Binding<MarkdownDocument>)
+
+    func customCSS(for settings: AppSettings) -> String?
+}
+
+extension EditorEngine {
+    func customCSS(for settings: AppSettings) -> String? {
+        nil
+    }
 }

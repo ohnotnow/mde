@@ -43,6 +43,32 @@ struct CodeMirrorEditorEngine: EditorEngine {
         }
     }
 
+    func customCSS(for settings: AppSettings) -> String? {
+        let horizontalPadding = settings.showLineNumbers ? 10 : 8
+        let gutterPadding = settings.showLineNumbers ? 10 : 8
+
+        return """
+        .cm-content {
+          padding-top: 14px !important;
+          padding-right: 16px !important;
+          padding-bottom: 18px !important;
+          padding-left: \(horizontalPadding)px !important;
+        }
+        .cm-gutter.cm-lineNumbers .cm-gutterElement {
+          padding-left: \(gutterPadding)px !important;
+          padding-right: 8px !important;
+        }
+        .cm-line:has(.tok-meta) {
+          background-color: transparent !important;
+          border-radius: 0 !important;
+        }
+        .tok-meta {
+          opacity: 0.52 !important;
+          font-size: 0.9em !important;
+        }
+        """
+    }
+
     private func textBinding(for document: Binding<MarkdownDocument>) -> Binding<String> {
         Binding(
             get: { document.wrappedValue.text },

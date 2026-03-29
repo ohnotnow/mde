@@ -17,7 +17,6 @@
 		70CA410D5D70A089727E2F39 /* FileDropOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BA39D81C85D220D418C74D /* FileDropOverlay.swift */; };
 		727A35EFCC16DA9FED3E219D /* FileDocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FF27206B9299729EF6ABBA /* FileDocumentService.swift */; };
 		76DAD7581D67ADDB9A83B05A /* PlainTextEditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE39A96FE0F4D4A77218A83 /* PlainTextEditorEngine.swift */; };
-		78EBC3C9FFF72590D71E7BA4 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 251A7B2B5C27BF7F481E912A /* Info.plist */; };
 		8FCA35205945A6D7646918EB /* CodeMirrorEditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4170991D3A5731687D45BC62 /* CodeMirrorEditorEngine.swift */; };
 		92B4AB1439EF6E6FBFBCE3E4 /* MarkdownDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518DBF03949FE4BCA68DEAB8 /* MarkdownDocument.swift */; };
 		9A63573086326B1E354CE91F /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6191F1475962CBC0821E190A /* AppSettings.swift */; };
@@ -228,7 +227,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				011D9CB428C889AFC9362A9E /* Assets.xcassets in Resources */,
-				78EBC3C9FFF72590D71E7BA4 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,7 +19,7 @@ struct ContentView: View {
             onIncreaseFontSize: appModel.increaseFontSize,
             onDecreaseFontSize: appModel.decreaseFontSize,
             onResetFontSize: appModel.resetFontSize,
-            onOpenDroppedFile: appModel.openDocument(at:)
+            onOpenDroppedFile: appModel.openDroppedDocument(at:)
         )
         .onOpenURL { url in
             appModel.openDocument(at: url)

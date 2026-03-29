@@ -59,18 +59,11 @@ final class AppModel: ObservableObject {
     }
 
     func openDocument(at url: URL) {
-        guard fileService.canOpen(url) else {
-            alertMessage = "The selected file type is not supported."
-            return
-        }
+        openDocument(at: url, requiresConfirmation: true)
+    }
 
-        guardIfNeeded(for: .openDocument) {
-            do {
-                self.document = try self.fileService.loadDocument(from: url)
-            } catch {
-                self.presentError(error)
-            }
-        }
+    func openDroppedDocument(at url: URL) {
+        openDocument(at: url, requiresConfirmation: false)
     }
 
     func openRecentDocument(_ url: URL) {
@@ -166,6 +159,28 @@ final class AppModel: ObservableObject {
 
     private func presentError(_ error: Error) {
         alertMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+    }
+
+    private func openDocument(at url: URL, requiresConfirmation: Bool) {
+        guard fileService.canOpen(url) else {
+            alertMessage = "The selected file type is not supported."
+            return
+        }
+
+        let openFile = { @MainActor in
+            do {
+                self.document = try self.fileService.loadDocument(from: url)
+            } catch {
+                self.presentError(error)
+            }
+        }
+
+        if requiresConfirmation {
+            guardIfNeeded(for: .openDocument, perform: openFile)
+        } else {
+            pendingConfirmation = nil
+            openFile()
+        }
     }
 }
 
