@@ -15,8 +15,15 @@ struct ContentView: View {
             document: $appModel.document,
             settings: $appModel.settings,
             editorEngine: appModel.editorEngine,
-            previewEngine: appModel.previewEngine
+            previewEngine: appModel.previewEngine,
+            onIncreaseFontSize: appModel.increaseFontSize,
+            onDecreaseFontSize: appModel.decreaseFontSize,
+            onResetFontSize: appModel.resetFontSize,
+            onOpenDroppedFile: appModel.openDocument(at:)
         )
+        .onOpenURL { url in
+            appModel.openDocument(at: url)
+        }
         .alert(
             "Unable to complete action",
             isPresented: alertIsPresented,

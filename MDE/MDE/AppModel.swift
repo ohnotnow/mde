@@ -5,18 +5,29 @@ import SwiftUI
 @MainActor
 final class AppModel: ObservableObject {
     @Published var document = MarkdownDocument.sample
-    @Published var settings = AppSettings()
+    @Published var settings: AppSettings
     @Published var alertMessage: String?
     @Published var pendingConfirmation: PendingConfirmation?
 
     let editorEngine: any EditorEngine
     let previewEngine: any PreviewEngine
     private let fileService: FileDocumentService
+    private let defaults: UserDefaults
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
-        self.editorEngine = PlainTextEditorEngine()
+        self.defaults = .standard
+        self.editorEngine = CodeMirrorEditorEngine()
         self.previewEngine = NativeMarkdownPreviewEngine()
         self.fileService = FileDocumentService()
+        self.settings = AppSettings.load(from: defaults)
+
+        $settings
+            .dropFirst()
+            .sink { [defaults] settings in
+                settings.save(to: defaults)
+            }
+            .store(in: &cancellables)
     }
 
     var canSave: Bool {
@@ -36,6 +47,21 @@ final class AppModel: ObservableObject {
                 self.document = opened
             } catch FileDialogCancellation.cancelled {
                 return
+            } catch {
+                self.presentError(error)
+            }
+        }
+    }
+
+    func openDocument(at url: URL) {
+        guard fileService.canOpen(url) else {
+            alertMessage = "The selected file type is not supported."
+            return
+        }
+
+        guardIfNeeded(for: .openDocument) {
+            do {
+                self.document = try self.fileService.loadDocument(from: url)
             } catch {
                 self.presentError(error)
             }
@@ -66,6 +92,23 @@ final class AppModel: ObservableObject {
 
     func togglePreview() {
         settings.showPreview.toggle()
+    }
+
+    func increaseFontSize() {
+        settings.increaseFontSize()
+    }
+
+    func decreaseFontSize() {
+        settings.decreaseFontSize()
+    }
+
+    func resetFontSize() {
+        settings.resetFontSize()
+    }
+
+    func updateFontSize(to value: Double) {
+        settings.editorFontSize = value
+        settings.clampValues()
     }
 
     func dismissAlert() {

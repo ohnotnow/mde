@@ -35,5 +35,22 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("p", modifiers: [.command, .option])
         }
+
+        CommandMenu("Editor") {
+            Button("Increase Font Size") {
+                appModel.increaseFontSize()
+            }
+            .keyboardShortcut("=", modifiers: [.command])
+
+            Button("Decrease Font Size") {
+                appModel.decreaseFontSize()
+            }
+            .keyboardShortcut("-", modifiers: [.command])
+
+            Button("Actual Size") {
+                appModel.resetFontSize()
+            }
+            .keyboardShortcut("0", modifiers: [.command])
+        }
     }
 }

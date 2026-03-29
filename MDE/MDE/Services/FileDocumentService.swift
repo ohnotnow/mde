@@ -43,7 +43,7 @@ struct FileDocumentService {
         return try write(document: document, to: url)
     }
 
-    private func loadDocument(from url: URL) throws -> MarkdownDocument {
+    func loadDocument(from url: URL) throws -> MarkdownDocument {
         let text = try String(contentsOf: url, encoding: .utf8)
         NSDocumentController.shared.noteNewRecentDocumentURL(url)
 
@@ -64,11 +64,33 @@ struct FileDocumentService {
         return saved
     }
 
-    private var supportedTypes: [UTType] {
-        if let markdown = UTType(filenameExtension: "md") {
-            return [markdown, .plainText]
+    func canOpen(_ url: URL) -> Bool {
+        guard url.isFileURL else {
+            return false
         }
 
-        return [.plainText]
+        if let type = try? url.resourceValues(forKeys: [.contentTypeKey]).contentType {
+            return supportedTypes.contains(where: { type.conforms(to: $0) })
+        }
+
+        return supportedExtensions.contains(url.pathExtension.lowercased())
+    }
+
+    private var supportedTypes: [UTType] {
+        var types: [UTType] = [.plainText]
+
+        if let markdown = UTType(filenameExtension: "md") {
+            types.insert(markdown, at: 0)
+        }
+
+        if let markdown = UTType(filenameExtension: "markdown"), !types.contains(markdown) {
+            types.insert(markdown, at: 0)
+        }
+
+        return types
+    }
+
+    private var supportedExtensions: Set<String> {
+        ["md", "markdown", "mdown", "mkd", "txt"]
     }
 }

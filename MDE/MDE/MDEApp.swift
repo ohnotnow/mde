@@ -19,5 +19,10 @@ struct MDEApp: App {
         .commands {
             AppCommands(appModel: appModel)
         }
+
+        Settings {
+            SettingsView()
+                .environmentObject(appModel)
+        }
     }
 }
