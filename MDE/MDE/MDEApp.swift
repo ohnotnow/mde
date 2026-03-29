@@ -16,5 +16,8 @@ struct MDEApp: App {
             ContentView()
                 .environmentObject(appModel)
         }
+        .commands {
+            AppCommands(appModel: appModel)
+        }
     }
 }

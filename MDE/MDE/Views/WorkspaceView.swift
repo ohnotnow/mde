@@ -29,6 +29,10 @@ struct WorkspaceView: View {
 
             Spacer()
 
+            Button(settings.showPreview ? "Hide Preview" : "Show Preview") {
+                settings.showPreview.toggle()
+            }
+
             Text("Editor: \(editorEngine.displayName)")
                 .foregroundStyle(.secondary)
 

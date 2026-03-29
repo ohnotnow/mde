@@ -11,6 +11,12 @@ struct MarkdownDocument: Equatable {
 }
 
 extension MarkdownDocument {
+    static let empty = MarkdownDocument(
+        text: "",
+        fileURL: nil,
+        isDirty: false
+    )
+
     static let sample = MarkdownDocument(
         text: """
         # MDE

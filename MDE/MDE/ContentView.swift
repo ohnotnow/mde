@@ -17,5 +17,56 @@ struct ContentView: View {
             editorEngine: appModel.editorEngine,
             previewEngine: appModel.previewEngine
         )
+        .alert(
+            "Unable to complete action",
+            isPresented: alertIsPresented,
+            actions: {
+                Button("OK") {
+                    appModel.dismissAlert()
+                }
+            },
+            message: {
+                Text(appModel.alertMessage ?? "An unknown error occurred.")
+            }
+        )
+        .confirmationDialog(
+            appModel.pendingConfirmation?.title ?? "",
+            isPresented: confirmationIsPresented,
+            titleVisibility: .visible,
+            actions: {
+                Button("Discard Changes", role: .destructive) {
+                    appModel.confirmPendingAction()
+                }
+
+                Button("Cancel", role: .cancel) {
+                    appModel.cancelPendingAction()
+                }
+            },
+            message: {
+                Text(appModel.pendingConfirmation?.message ?? "")
+            }
+        )
+    }
+
+    private var alertIsPresented: Binding<Bool> {
+        Binding(
+            get: { appModel.alertMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    appModel.dismissAlert()
+                }
+            }
+        )
+    }
+
+    private var confirmationIsPresented: Binding<Bool> {
+        Binding(
+            get: { appModel.pendingConfirmation != nil },
+            set: { isPresented in
+                if !isPresented {
+                    appModel.cancelPendingAction()
+                }
+            }
+        )
     }
 }
