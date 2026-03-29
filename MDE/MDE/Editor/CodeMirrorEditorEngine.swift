@@ -20,14 +20,14 @@ struct CodeMirrorEditorEngine: EditorEngine {
                 text: textBinding(for: document),
                 configuration: EditorConfiguration(
                     fontSize: settings.editorFontSize,
-                    fontFamily: "Menlo, Monaco, monospace",
-                    lineHeight: 1.5,
-                    showLineNumbers: true,
-                    wrapLines: true,
+                    fontFamily: settings.editorFontFamily.cssValue,
+                    lineHeight: settings.editorLineHeight,
+                    showLineNumbers: settings.showLineNumbers,
+                    wrapLines: settings.wrapLines,
                     renderMermaid: false,
                     renderMath: true,
                     renderImages: true,
-                    hideSyntax: false
+                    hideSyntax: settings.hideSyntax
                 )
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -99,12 +99,21 @@ struct WorkspaceView: View {
     }
 
     private var editorPane: some View {
-        editorEngine.makeEditorView(document: $document, settings: settings)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        ZStack {
+            editorEngine.makeEditorView(document: $document, settings: settings)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            FileDropOverlay(
+                onDrop: onOpenDroppedFile,
+                onTargetChange: { targeted in
+                    isDropTargeted = targeted
+                }
+            )
+        }
     }
 
     private var previewPane: some View {
-        previewEngine.makePreviewView(document: document)
+        previewEngine.makePreviewView(document: document, settings: settings)
             .frame(minWidth: 320, maxWidth: .infinity, maxHeight: .infinity)
     }
 

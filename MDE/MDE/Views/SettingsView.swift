@@ -35,6 +35,30 @@ struct SettingsView: View {
                     }
                 }
 
+                Picker("Font", selection: fontFamilyBinding) {
+                    ForEach(EditorFontFamily.allCases) { family in
+                        Text(family.label).tag(family)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("Line Height")
+                        Spacer()
+                        Text(String(format: "%.1f", appModel.settings.editorLineHeight))
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Slider(
+                        value: lineHeightBinding,
+                        in: AppSettings.minimumLineHeight...AppSettings.maximumLineHeight,
+                        step: 0.1
+                    )
+                }
+
+                Toggle("Show line numbers", isOn: showLineNumbersBinding)
+                Toggle("Wrap long lines", isOn: wrapLinesBinding)
+                Toggle("Hide Markdown syntax on inactive lines", isOn: hideSyntaxBinding)
                 Toggle("Show preview by default", isOn: showPreviewBinding)
             }
         }
@@ -56,6 +80,41 @@ struct SettingsView: View {
             set: { newValue in
                 appModel.settings.showPreview = newValue
             }
+        )
+    }
+
+    private var fontFamilyBinding: Binding<EditorFontFamily> {
+        Binding(
+            get: { appModel.settings.editorFontFamily },
+            set: { appModel.settings.editorFontFamily = $0 }
+        )
+    }
+
+    private var lineHeightBinding: Binding<Double> {
+        Binding(
+            get: { appModel.settings.editorLineHeight },
+            set: { appModel.updateLineHeight(to: $0) }
+        )
+    }
+
+    private var showLineNumbersBinding: Binding<Bool> {
+        Binding(
+            get: { appModel.settings.showLineNumbers },
+            set: { appModel.settings.showLineNumbers = $0 }
+        )
+    }
+
+    private var wrapLinesBinding: Binding<Bool> {
+        Binding(
+            get: { appModel.settings.wrapLines },
+            set: { appModel.settings.wrapLines = $0 }
+        )
+    }
+
+    private var hideSyntaxBinding: Binding<Bool> {
+        Binding(
+            get: { appModel.settings.hideSyntax },
+            set: { appModel.settings.hideSyntax = $0 }
         )
     }
 }

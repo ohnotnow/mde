@@ -14,6 +14,25 @@ struct AppCommands: Commands {
                 appModel.openDocument()
             }
             .keyboardShortcut("o")
+
+            Menu("Open Recent") {
+                if appModel.recentDocuments.isEmpty {
+                    Button("No Recent Documents") { }
+                        .disabled(true)
+                } else {
+                    ForEach(appModel.recentDocuments, id: \.self) { url in
+                        Button(url.lastPathComponent) {
+                            appModel.openRecentDocument(url)
+                        }
+                    }
+
+                    Divider()
+
+                    Button("Clear Menu") {
+                        appModel.clearRecentDocuments()
+                    }
+                }
+            }
         }
 
         CommandGroup(replacing: .saveItem) {

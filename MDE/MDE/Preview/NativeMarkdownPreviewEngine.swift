@@ -4,11 +4,12 @@ struct NativeMarkdownPreviewEngine: PreviewEngine {
     let id = "native-markdown-preview"
     let displayName = "Native Preview"
 
-    func makePreviewView(document: MarkdownDocument) -> AnyView {
+    func makePreviewView(document: MarkdownDocument, settings: AppSettings) -> AnyView {
         AnyView(
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(renderedText(from: document.text))
+                        .font(.system(size: settings.editorFontSize))
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }

@@ -9,12 +9,16 @@ import SwiftUI
 
 @main
 struct MDEApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var appModel = AppModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(appModel)
+                .task {
+                    appDelegate.appModel = appModel
+                }
         }
         .commands {
             AppCommands(appModel: appModel)

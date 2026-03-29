@@ -1,4 +1,5 @@
 import Combine
+import AppKit
 import UniformTypeIdentifiers
 import SwiftUI
 
@@ -34,6 +35,10 @@ final class AppModel: ObservableObject {
         document.isDirty || document.fileURL != nil
     }
 
+    var recentDocuments: [URL] {
+        NSDocumentController.shared.recentDocumentURLs.filter(fileService.canOpen)
+    }
+
     func newDocument() {
         guardIfNeeded(for: .newDocument) {
             self.document = MarkdownDocument.empty
@@ -66,6 +71,15 @@ final class AppModel: ObservableObject {
                 self.presentError(error)
             }
         }
+    }
+
+    func openRecentDocument(_ url: URL) {
+        openDocument(at: url)
+    }
+
+    func clearRecentDocuments() {
+        NSDocumentController.shared.clearRecentDocuments(nil)
+        objectWillChange.send()
     }
 
     func saveDocument() {
@@ -108,6 +122,11 @@ final class AppModel: ObservableObject {
 
     func updateFontSize(to value: Double) {
         settings.editorFontSize = value
+        settings.clampValues()
+    }
+
+    func updateLineHeight(to value: Double) {
+        settings.editorLineHeight = value
         settings.clampValues()
     }
 

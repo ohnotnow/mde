@@ -12,9 +12,12 @@
 		143253BEED8EA3FCC7C3040A /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D37DBD5991399A99747ECF /* WorkspaceView.swift */; };
 		14B559FB4F811AE5D4C0227D /* MarkdownEditor in Frameworks */ = {isa = PBXBuildFile; productRef = B1A82E04A9FE2A4EA64FE409 /* MarkdownEditor */; };
 		3530F3331D364A21A5765C2B /* EditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8344D9D74CB19A1255C52E95 /* EditorEngine.swift */; };
+		4D66B762AC7E6F6CB5907AFD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEEEEE11FE1885FC15C9199 /* AppDelegate.swift */; };
 		6F5802D6D0D6829CC2F3B378 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E2B4D069D16A858DEF38F91 /* AppModel.swift */; };
+		70CA410D5D70A089727E2F39 /* FileDropOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BA39D81C85D220D418C74D /* FileDropOverlay.swift */; };
 		727A35EFCC16DA9FED3E219D /* FileDocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FF27206B9299729EF6ABBA /* FileDocumentService.swift */; };
 		76DAD7581D67ADDB9A83B05A /* PlainTextEditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE39A96FE0F4D4A77218A83 /* PlainTextEditorEngine.swift */; };
+		78EBC3C9FFF72590D71E7BA4 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 251A7B2B5C27BF7F481E912A /* Info.plist */; };
 		8FCA35205945A6D7646918EB /* CodeMirrorEditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4170991D3A5731687D45BC62 /* CodeMirrorEditorEngine.swift */; };
 		92B4AB1439EF6E6FBFBCE3E4 /* MarkdownDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518DBF03949FE4BCA68DEAB8 /* MarkdownDocument.swift */; };
 		9A63573086326B1E354CE91F /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6191F1475962CBC0821E190A /* AppSettings.swift */; };
@@ -26,6 +29,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0AEEEEE11FE1885FC15C9199 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		20BA39D81C85D220D418C74D /* FileDropOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDropOverlay.swift; sourceTree = "<group>"; };
 		251A7B2B5C27BF7F481E912A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		32ECE99600F9CD92261093E8 /* MDEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDEApp.swift; sourceTree = "<group>"; };
 		36CB8E0296DC238165D3C0DD /* PreviewEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEngine.swift; sourceTree = "<group>"; };
@@ -69,6 +74,7 @@
 		0EA412B1C4A32024C260AECF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				20BA39D81C85D220D418C74D /* FileDropOverlay.swift */,
 				EACFFB1D381702BECFAC1602 /* SettingsView.swift */,
 				D6D37DBD5991399A99747ECF /* WorkspaceView.swift */,
 			);
@@ -78,6 +84,7 @@
 		21D80B34EF879771F76E3AFC /* MDE */ = {
 			isa = PBXGroup;
 			children = (
+				0AEEEEE11FE1885FC15C9199 /* AppDelegate.swift */,
 				4E2B4D069D16A858DEF38F91 /* AppModel.swift */,
 				F5FEA92551FCB0AC2B720F55 /* Assets.xcassets */,
 				FC321FD34CC0F889C8858A94 /* ContentView.swift */,
@@ -221,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				011D9CB428C889AFC9362A9E /* Assets.xcassets in Resources */,
+				78EBC3C9FFF72590D71E7BA4 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,12 +240,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6C62C950FEAB061825794E8 /* AppCommands.swift in Sources */,
+				4D66B762AC7E6F6CB5907AFD /* AppDelegate.swift in Sources */,
 				6F5802D6D0D6829CC2F3B378 /* AppModel.swift in Sources */,
 				9A63573086326B1E354CE91F /* AppSettings.swift in Sources */,
 				8FCA35205945A6D7646918EB /* CodeMirrorEditorEngine.swift in Sources */,
 				B99F08D6AB6E4FC7509C3D03 /* ContentView.swift in Sources */,
 				3530F3331D364A21A5765C2B /* EditorEngine.swift in Sources */,
 				727A35EFCC16DA9FED3E219D /* FileDocumentService.swift in Sources */,
+				70CA410D5D70A089727E2F39 /* FileDropOverlay.swift in Sources */,
 				A3B6BA51D6F42B9BD62E8A95 /* MDEApp.swift in Sources */,
 				92B4AB1439EF6E6FBFBCE3E4 /* MarkdownDocument.swift in Sources */,
 				F2892CEEA0C562572606D642 /* NativeMarkdownPreviewEngine.swift in Sources */,
