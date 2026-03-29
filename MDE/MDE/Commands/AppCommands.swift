@@ -34,15 +34,15 @@ struct AppCommands: Commands {
                 appModel.togglePreview()
             }
             .keyboardShortcut("p", modifiers: [.command, .option])
-        }
 
-        CommandMenu("Editor") {
-            Button("Increase Font Size") {
+            Divider()
+
+            Button("Zoom In") {
                 appModel.increaseFontSize()
             }
             .keyboardShortcut("=", modifiers: [.command])
 
-            Button("Decrease Font Size") {
+            Button("Zoom Out") {
                 appModel.decreaseFontSize()
             }
             .keyboardShortcut("-", modifiers: [.command])
