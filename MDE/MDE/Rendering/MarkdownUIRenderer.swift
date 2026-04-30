@@ -5,6 +5,7 @@ import SwiftUI
 struct MarkdownReaderView: View {
     let document: MarkdownDocument
     let settings: AppSettings
+    let navigator: ReaderNavigator
 
     var body: some View {
         ZStack {
@@ -18,7 +19,7 @@ struct MarkdownReaderView: View {
             if frontMatter == nil && bodyIsEmpty {
                 emptyState
             } else {
-                ScrollView {
+                HostingScrollView(navigator: navigator) {
                     VStack(alignment: .leading, spacing: 24) {
                         if let frontMatter {
                             frontMatterView(frontMatter)
@@ -33,15 +34,19 @@ struct MarkdownReaderView: View {
                     .padding(.vertical, 40)
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .scrollIndicators(.automatic)
             }
         }
     }
 
     @ViewBuilder
     private func markdownView(for body: String) -> some View {
+        let imageProvider = LocalAwareImageProvider(
+            baseURL: document.fileURL?.deletingLastPathComponent()
+        )
+
         let markdown = Markdown(body)
             .markdownTheme(.mde(for: settings))
+            .markdownImageProvider(imageProvider)
             .markdownTextStyle {
                 FontSize(settings.readerFontSize)
             }
@@ -208,4 +213,79 @@ extension ReaderFontFamily {
 
 private extension Color {
     static let nordPolarNight = Color(red: 46.0 / 255.0, green: 52.0 / 255.0, blue: 64.0 / 255.0)
+}
+
+struct LocalAwareImageProvider: ImageProvider {
+    let baseURL: URL?
+
+    func makeImage(url: URL?) -> some View {
+        let resolved = resolve(url)
+        return Group {
+            if let resolved, resolved.isFileURL {
+                FileBackedImage(url: resolved)
+            } else {
+                DefaultImageProvider().makeImage(url: resolved)
+            }
+        }
+    }
+
+    private func resolve(_ url: URL?) -> URL? {
+        guard let url else { return nil }
+        if url.scheme != nil { return url }
+
+        let path = url.relativePath
+        if path.hasPrefix("/") {
+            return URL(fileURLWithPath: path)
+        }
+
+        guard let baseURL else { return nil }
+        return URL(string: url.relativeString, relativeTo: baseURL)?.absoluteURL
+    }
+}
+
+struct FileBackedImage: View {
+    let url: URL
+
+    @State private var image: NSImage?
+    @State private var didAttemptLoad: Bool = false
+
+    var body: some View {
+        Group {
+            if let image {
+                Image(nsImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: image.size.width)
+            } else if didAttemptLoad {
+                placeholder
+            } else {
+                Color.clear.frame(width: 0, height: 0)
+            }
+        }
+        .task(id: url) {
+            let loaded = await loadImage(at: url)
+            await MainActor.run {
+                self.image = loaded
+                self.didAttemptLoad = true
+            }
+        }
+    }
+
+    private var placeholder: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "photo.badge.exclamationmark")
+                .foregroundStyle(.secondary)
+            Text("Image unavailable: \(url.lastPathComponent)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(10)
+        .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
+    }
+
+    nonisolated private func loadImage(at url: URL) async -> NSImage? {
+        let didStart = url.startAccessingSecurityScopedResource()
+        defer { if didStart { url.stopAccessingSecurityScopedResource() } }
+        return NSImage(contentsOf: url)
+    }
 }

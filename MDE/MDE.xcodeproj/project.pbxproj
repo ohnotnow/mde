@@ -22,6 +22,7 @@
 		A4B5C6D7E8F9A0B1C2D3E4F5 /* MarkdownUIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B6C7D8E9F0A1B2C3D4E5F6 /* MarkdownUIRenderer.swift */; };
 		B1B2C3D4E5F6A7B8C9D0E1F2 /* Highlightr in Frameworks */ = {isa = PBXBuildFile; productRef = B2B3C4D5E6F7A8B9C0D1E2F3 /* Highlightr */; };
 		B4B5C6D7E8F9A0B1C2D3E4F5 /* NordSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B6C7D8E9F0A1B2C3D4E5F6 /* NordSyntaxHighlighter.swift */; };
+		D1E2F3A4B5C6D7E8F9A0B1C2 /* ReaderNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B6C7D8E9F0A1B2 /* ReaderNavigator.swift */; };
 		F6E039A562CEC67CB756FC8A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACFFB1D381702BECFAC1602 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 		38EA0AAD1B059AAFF0391F45 /* MDE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MDE.entitlements; sourceTree = "<group>"; };
 		A5B6C7D8E9F0A1B2C3D4E5F6 /* MarkdownUIRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownUIRenderer.swift; sourceTree = "<group>"; };
 		B5B6C7D8E9F0A1B2C3D4E5F6 /* NordSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NordSyntaxHighlighter.swift; sourceTree = "<group>"; };
+		C1D2E3F4A5B6C7D8E9F0A1B2 /* ReaderNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderNavigator.swift; sourceTree = "<group>"; };
 		4E2B4D069D16A858DEF38F91 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		518DBF03949FE4BCA68DEAB8 /* MarkdownDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownDocument.swift; sourceTree = "<group>"; };
 		5E903D066FDF24F3EB2E0DEF /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				20BA39D81C85D220D418C74D /* FileDropOverlay.swift */,
+				C1D2E3F4A5B6C7D8E9F0A1B2 /* ReaderNavigator.swift */,
 				EACFFB1D381702BECFAC1602 /* SettingsView.swift */,
 				D6D37DBD5991399A99747ECF /* WorkspaceView.swift */,
 			);
@@ -235,6 +238,7 @@
 				92B4AB1439EF6E6FBFBCE3E4 /* MarkdownDocument.swift in Sources */,
 				A4B5C6D7E8F9A0B1C2D3E4F5 /* MarkdownUIRenderer.swift in Sources */,
 				B4B5C6D7E8F9A0B1C2D3E4F5 /* NordSyntaxHighlighter.swift in Sources */,
+				D1E2F3A4B5C6D7E8F9A0B1C2 /* ReaderNavigator.swift in Sources */,
 				F6E039A562CEC67CB756FC8A /* SettingsView.swift in Sources */,
 				143253BEED8EA3FCC7C3040A /* WorkspaceView.swift in Sources */,
 			);
@@ -314,7 +318,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = S8JFC974Y7;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MDE/Info.plist;
@@ -393,7 +397,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = S8JFC974Y7;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MDE/Info.plist;

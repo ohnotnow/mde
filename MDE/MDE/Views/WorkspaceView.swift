@@ -7,12 +7,21 @@ struct WorkspaceView: View {
 
     let onOpenDroppedFile: (URL) -> Void
 
+    @StateObject private var navigator = ReaderNavigator()
     @State private var isDropTargeted = false
 
     var body: some View {
         readerPane
         .frame(minWidth: 920, minHeight: 640)
         .background(WindowConfigurationView(document: document))
+        .focusedSceneValue(\.readerNavigator, navigator)
+        .onAppear {
+            navigator.sourceText = document.bodyText
+        }
+        .onChange(of: document.bodyText) { _, newValue in
+            navigator.sourceText = newValue
+            navigator.resetMatches()
+        }
         .dropDestination(for: URL.self) { items, _ in
             guard let url = items.first else {
                 return false
@@ -22,6 +31,13 @@ struct WorkspaceView: View {
             return true
         } isTargeted: { targeted in
             isDropTargeted = targeted
+        }
+        .overlay(alignment: .topTrailing) {
+            if navigator.isFindBarVisible {
+                FindBarView(navigator: navigator)
+                    .padding(.top, 12)
+                    .padding(.trailing, 16)
+            }
         }
         .overlay {
             if isDropTargeted {
@@ -39,7 +55,7 @@ struct WorkspaceView: View {
     }
 
     private var readerPane: some View {
-        MarkdownReaderView(document: document, settings: settings)
+        MarkdownReaderView(document: document, settings: settings, navigator: navigator)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

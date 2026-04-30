@@ -1,7 +1,9 @@
+import AppKit
 import SwiftUI
 
 struct AppCommands: Commands {
     @ObservedObject var appModel: AppModel
+    @FocusedValue(\.readerNavigator) private var readerNavigator: ReaderNavigator?
 
     var body: some Commands {
         CommandGroup(replacing: .newItem) {
@@ -28,9 +30,26 @@ struct AppCommands: Commands {
                     }
                 }
             }
+
+            Divider()
+
+            Button("Close") {
+                NSApp.keyWindow?.performClose(nil)
+            }
+            .keyboardShortcut("w")
         }
 
         CommandGroup(replacing: .saveItem) { }
+
+        CommandGroup(after: .pasteboard) {
+            Divider()
+
+            Button("Find...") {
+                readerNavigator?.showFindBar()
+            }
+            .keyboardShortcut("f")
+            .disabled(readerNavigator == nil)
+        }
 
         CommandMenu("View") {
             Button("Zoom In") {
@@ -47,6 +66,20 @@ struct AppCommands: Commands {
                 appModel.resetFontSize()
             }
             .keyboardShortcut("0", modifiers: [.command])
+
+            Divider()
+
+            Button("Top of Document") {
+                readerNavigator?.scrollToTop()
+            }
+            .keyboardShortcut(.upArrow, modifiers: [.command])
+            .disabled(readerNavigator == nil)
+
+            Button("Bottom of Document") {
+                readerNavigator?.scrollToBottom()
+            }
+            .keyboardShortcut(.downArrow, modifiers: [.command])
+            .disabled(readerNavigator == nil)
         }
     }
 }
