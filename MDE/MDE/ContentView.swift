@@ -14,7 +14,6 @@ struct ContentView: View {
         WorkspaceView(
             document: $appModel.document,
             settings: $appModel.settings,
-            renderer: appModel.renderer,
             onOpenDroppedFile: appModel.openDroppedDocument(at:)
         )
         .onOpenURL { url in

@@ -1,7 +1,11 @@
+import AppKit
 import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var appModel: AppModel
+
+    private let installedFontFamilies: [String] =
+        NSFontManager.shared.availableFontFamilies.sorted()
 
     var body: some View {
         Form {
@@ -36,8 +40,16 @@ struct SettingsView: View {
                 }
 
                 Picker("Font", selection: fontFamilyBinding) {
-                    ForEach(ReaderFontFamily.allCases) { family in
-                        Text(family.label).tag(family)
+                    Section {
+                        ForEach(ReaderFontFamily.presets) { family in
+                            Text(family.label).tag(family)
+                        }
+                    }
+
+                    Section("Installed Fonts") {
+                        ForEach(installedFontFamilies, id: \.self) { name in
+                            Text(name).tag(ReaderFontFamily.custom(name))
+                        }
                     }
                 }
 
@@ -57,17 +69,6 @@ struct SettingsView: View {
                 }
             }
 
-            Section("Rendering Engine") {
-                Picker("Renderer", selection: rendererBinding) {
-                    ForEach(RendererChoice.allCases) { choice in
-                        Text(choice.label).tag(choice)
-                    }
-                }
-
-                Text("Switch between renderers to compare quality on the current document.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-            }
         }
         .formStyle(.grouped)
         .padding(20)
@@ -95,13 +96,6 @@ struct SettingsView: View {
                 appModel.settings.readerLineHeight = $0
                 appModel.settings.clampValues()
             }
-        )
-    }
-
-    private var rendererBinding: Binding<RendererChoice> {
-        Binding(
-            get: { appModel.settings.rendererChoice },
-            set: { appModel.settings.rendererChoice = $0 }
         )
     }
 }

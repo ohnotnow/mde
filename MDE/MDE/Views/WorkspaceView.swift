@@ -5,7 +5,6 @@ struct WorkspaceView: View {
     @Binding var document: MarkdownDocument
     @Binding var settings: AppSettings
 
-    let renderer: any MarkdownRenderer
     let onOpenDroppedFile: (URL) -> Void
 
     @State private var isDropTargeted = false
@@ -40,7 +39,7 @@ struct WorkspaceView: View {
     }
 
     private var readerPane: some View {
-        renderer.makeRenderedView(document: document, settings: settings)
+        MarkdownReaderView(document: document, settings: settings)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

@@ -9,20 +9,9 @@ final class AppModel: ObservableObject {
     @Published var settings: AppSettings
     @Published var alertMessage: String?
 
-    private let nativeRenderer = NativeMarkdownRenderer()
-    private let markdownUIRenderer = MarkdownUIRenderer()
     private let fileService: FileDocumentService
     private let defaults: UserDefaults
     private var cancellables = Set<AnyCancellable>()
-
-    var renderer: any MarkdownRenderer {
-        switch settings.rendererChoice {
-        case .markdownUI:
-            return markdownUIRenderer
-        case .native:
-            return nativeRenderer
-        }
-    }
 
     init() {
         self.defaults = .standard

@@ -11,7 +11,6 @@ struct AppSettings: Equatable {
     var readerFontSize: Double = AppSettings.defaultFontSize
     var readerFontFamily: ReaderFontFamily = .serif
     var readerLineHeight: Double = 1.5
-    var rendererChoice: RendererChoice = .markdownUI
 
     mutating func increaseFontSize() {
         readerFontSize = min(readerFontSize + 1, Self.maximumFontSize)
@@ -36,7 +35,6 @@ extension AppSettings {
         static let readerFontSize = "settings.readerFontSize"
         static let readerFontFamily = "settings.readerFontFamily"
         static let readerLineHeight = "settings.readerLineHeight"
-        static let rendererChoice = "settings.rendererChoice"
         static let legacyEditorFontSize = "settings.editorFontSize"
         static let legacyEditorFontFamily = "settings.editorFontFamily"
         static let legacyEditorLineHeight = "settings.editorLineHeight"
@@ -52,7 +50,7 @@ extension AppSettings {
         }
 
         if let rawValue = defaults.string(forKey: StorageKey.readerFontFamily),
-           let fontFamily = ReaderFontFamily(rawValue: rawValue) {
+           let fontFamily = ReaderFontFamily(storageValue: rawValue) {
             settings.readerFontFamily = fontFamily
         } else if let rawValue = defaults.string(forKey: StorageKey.legacyEditorFontFamily),
                   let fontFamily = ReaderFontFamily.legacy(rawValue: rawValue) {
@@ -65,45 +63,26 @@ extension AppSettings {
             settings.readerLineHeight = defaults.double(forKey: StorageKey.legacyEditorLineHeight)
         }
 
-        if let rawValue = defaults.string(forKey: StorageKey.rendererChoice),
-           let choice = RendererChoice(rawValue: rawValue) {
-            settings.rendererChoice = choice
-        }
-
         settings.clampValues()
         return settings
     }
 
     func save(to defaults: UserDefaults) {
         defaults.set(readerFontSize, forKey: StorageKey.readerFontSize)
-        defaults.set(readerFontFamily.rawValue, forKey: StorageKey.readerFontFamily)
+        defaults.set(readerFontFamily.storageValue, forKey: StorageKey.readerFontFamily)
         defaults.set(readerLineHeight, forKey: StorageKey.readerLineHeight)
-        defaults.set(rendererChoice.rawValue, forKey: StorageKey.rendererChoice)
     }
 }
 
-enum RendererChoice: String, CaseIterable, Equatable, Identifiable {
-    case markdownUI
-    case native
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .markdownUI:
-            return "MarkdownUI (spike)"
-        case .native:
-            return "Native (AttributedString)"
-        }
-    }
-}
-
-enum ReaderFontFamily: String, CaseIterable, Equatable, Identifiable {
+enum ReaderFontFamily: Hashable, Identifiable {
     case system
     case serif
     case mono
+    case custom(String)
 
-    var id: String { rawValue }
+    static let presets: [ReaderFontFamily] = [.system, .serif, .mono]
+
+    var id: String { storageValue }
 
     var label: String {
         switch self {
@@ -113,28 +92,41 @@ enum ReaderFontFamily: String, CaseIterable, Equatable, Identifiable {
             return "System Serif"
         case .mono:
             return "Monospaced"
+        case .custom(let name):
+            return name
         }
     }
 
-    var cssValue: String {
+    var storageValue: String {
         switch self {
         case .system:
-            return "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
+            return "system"
         case .serif:
-            return "'New York', Georgia, serif"
+            return "serif"
         case .mono:
-            return "'SF Mono', Menlo, Monaco, monospace"
+            return "mono"
+        case .custom(let name):
+            return "custom:\(name)"
         }
     }
 
-    func swiftUIFont(size: Double) -> Font {
-        switch self {
-        case .system:
-            return .system(size: size, design: .default)
-        case .serif:
-            return .system(size: size, design: .serif)
-        case .mono:
-            return .system(size: size, design: .monospaced)
+    init?(storageValue: String) {
+        switch storageValue {
+        case "system":
+            self = .system
+        case "serif":
+            self = .serif
+        case "mono":
+            self = .mono
+        default:
+            guard storageValue.hasPrefix("custom:") else {
+                return nil
+            }
+            let name = String(storageValue.dropFirst("custom:".count))
+            guard !name.isEmpty else {
+                return nil
+            }
+            self = .custom(name)
         }
     }
 
