@@ -2,13 +2,11 @@
 
 A native macOS Markdown viewer. Double-click a `.md` file in Finder, get a nicely rendered, screen-sharable reading window.
 
+![screenshot](screenshot.png)
+
 ## What it does
 
 `mde` opens Markdown files (`.md`, `.markdown`, `.mdown`, `.mkd`) and renders them for reading: decent typography, syntax-highlighted code blocks, and YAML front-matter pulled out and shown as metadata above the body instead of being mangled into a giant heading. It is a viewer, not an editor. Files open via Finder, drag-and-drop, the standard Open dialog, or Open Recent.
-
-The reading column scales with the font size, so when you bump the text up for a screen-share the line length stays sensible instead of wrapping into narrow stripes.
-
-This is a personal learning project. It started life as a Markdown editor wrapping the [Pallepadehat/MarkdownEditor](https://github.com/Pallepadehat/MarkdownEditor) WebKit/CodeMirror package, but custom styling on top of that turned out to be a fight I kept losing, so it pivoted to a native viewer using [MarkdownUI](https://github.com/gonzalezreal/swift-markdown-ui).
 
 ## Quick install (no Xcode required)
 
