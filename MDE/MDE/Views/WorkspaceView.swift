@@ -1,31 +1,19 @@
+import AppKit
 import SwiftUI
 
 struct WorkspaceView: View {
     @Binding var document: MarkdownDocument
     @Binding var settings: AppSettings
 
-    let editorEngine: any EditorEngine
-    let previewEngine: any PreviewEngine
-    let onIncreaseFontSize: () -> Void
-    let onDecreaseFontSize: () -> Void
-    let onResetFontSize: () -> Void
+    let renderer: any MarkdownRenderer
     let onOpenDroppedFile: (URL) -> Void
 
     @State private var isDropTargeted = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            Divider()
-            HSplitView {
-                editorPane
-
-                if settings.showPreview {
-                    previewPane
-                }
-            }
-        }
-        .frame(minWidth: 960, minHeight: 640)
+        readerPane
+        .frame(minWidth: 920, minHeight: 640)
+        .background(WindowConfigurationView(document: document))
         .dropDestination(for: URL.self) { items, _ in
             guard let url = items.first else {
                 return false
@@ -51,73 +39,27 @@ struct WorkspaceView: View {
         }
     }
 
-    private var header: some View {
-        HStack(spacing: 12) {
-            Text(documentTitle)
-                .font(.headline)
+    private var readerPane: some View {
+        renderer.makeRenderedView(document: document, settings: settings)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
 
-            Spacer()
+private struct WindowConfigurationView: NSViewRepresentable {
+    let document: MarkdownDocument
 
-            Button(settings.showPreview ? "Hide Preview" : "Show Preview") {
-                settings.showPreview.toggle()
+    func makeNSView(context: Context) -> NSView {
+        NSView()
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        DispatchQueue.main.async {
+            guard let window = nsView.window else {
+                return
             }
 
-            HStack(spacing: 6) {
-                Button {
-                    onDecreaseFontSize()
-                } label: {
-                    Image(systemName: "textformat.size.smaller")
-                }
-
-                Text("\(Int(settings.editorFontSize)) pt")
-                    .monospacedDigit()
-                    .frame(minWidth: 48)
-
-                Button {
-                    onIncreaseFontSize()
-                } label: {
-                    Image(systemName: "textformat.size.larger")
-                }
-
-                Button("Reset") {
-                    onResetFontSize()
-                }
-            }
-
-            Text("Editor: \(editorEngine.displayName)")
-                .foregroundStyle(.secondary)
-
-            if settings.showPreview {
-                Text("Preview: \(previewEngine.displayName)")
-                    .foregroundStyle(.secondary)
-            }
+            window.title = document.displayName
+            window.representedURL = document.fileURL
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .buttonStyle(.bordered)
-    }
-
-    private var editorPane: some View {
-        ZStack {
-            editorEngine.makeEditorView(document: $document, settings: settings)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            FileDropOverlay(
-                onDrop: onOpenDroppedFile,
-                onTargetChange: { targeted in
-                    isDropTargeted = targeted
-                }
-            )
-        }
-    }
-
-    private var previewPane: some View {
-        previewEngine.makePreviewView(document: document, settings: settings)
-            .frame(minWidth: 320, maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private var documentTitle: String {
-        document.isDirty ? "\(document.displayName) •" : document.displayName
     }
 }

@@ -10,7 +10,10 @@ build/
 
 # Swift Package Manager
 .build/
-Package.resolved
+# Package.resolved is intentionally NOT ignored — it pins SPM dep versions
+
+# ait local issue tracker state
+.ait/
 
 # Playground state
 timeline.xctimeline

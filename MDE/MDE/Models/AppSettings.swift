@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 struct AppSettings: Equatable {
     static let minimumFontSize = 10.0
@@ -7,73 +8,66 @@ struct AppSettings: Equatable {
     static let minimumLineHeight = 1.1
     static let maximumLineHeight = 2.2
 
-    var editorFontSize: Double = AppSettings.defaultFontSize
-    var editorFontFamily: EditorFontFamily = .sfMono
-    var editorLineHeight: Double = 1.6
-    var showLineNumbers: Bool = true
-    var wrapLines: Bool = true
-    var hideSyntax: Bool = true
-    var showPreview: Bool = true
+    var readerFontSize: Double = AppSettings.defaultFontSize
+    var readerFontFamily: ReaderFontFamily = .serif
+    var readerLineHeight: Double = 1.5
+    var rendererChoice: RendererChoice = .markdownUI
 
     mutating func increaseFontSize() {
-        editorFontSize = min(editorFontSize + 1, Self.maximumFontSize)
+        readerFontSize = min(readerFontSize + 1, Self.maximumFontSize)
     }
 
     mutating func decreaseFontSize() {
-        editorFontSize = max(editorFontSize - 1, Self.minimumFontSize)
+        readerFontSize = max(readerFontSize - 1, Self.minimumFontSize)
     }
 
     mutating func resetFontSize() {
-        editorFontSize = Self.defaultFontSize
+        readerFontSize = Self.defaultFontSize
     }
 
     mutating func clampValues() {
-        editorFontSize = min(max(editorFontSize, Self.minimumFontSize), Self.maximumFontSize)
-        editorLineHeight = min(max(editorLineHeight, Self.minimumLineHeight), Self.maximumLineHeight)
+        readerFontSize = min(max(readerFontSize, Self.minimumFontSize), Self.maximumFontSize)
+        readerLineHeight = min(max(readerLineHeight, Self.minimumLineHeight), Self.maximumLineHeight)
     }
 }
 
 extension AppSettings {
     private enum StorageKey {
-        static let editorFontSize = "settings.editorFontSize"
-        static let editorFontFamily = "settings.editorFontFamily"
-        static let editorLineHeight = "settings.editorLineHeight"
-        static let showLineNumbers = "settings.showLineNumbers"
-        static let wrapLines = "settings.wrapLines"
-        static let hideSyntax = "settings.hideSyntax"
-        static let showPreview = "settings.showPreview"
+        static let readerFontSize = "settings.readerFontSize"
+        static let readerFontFamily = "settings.readerFontFamily"
+        static let readerLineHeight = "settings.readerLineHeight"
+        static let rendererChoice = "settings.rendererChoice"
+        static let legacyEditorFontSize = "settings.editorFontSize"
+        static let legacyEditorFontFamily = "settings.editorFontFamily"
+        static let legacyEditorLineHeight = "settings.editorLineHeight"
     }
 
     static func load(from defaults: UserDefaults) -> AppSettings {
         var settings = AppSettings()
 
-        if defaults.object(forKey: StorageKey.editorFontSize) != nil {
-            settings.editorFontSize = defaults.double(forKey: StorageKey.editorFontSize)
+        if defaults.object(forKey: StorageKey.readerFontSize) != nil {
+            settings.readerFontSize = defaults.double(forKey: StorageKey.readerFontSize)
+        } else if defaults.object(forKey: StorageKey.legacyEditorFontSize) != nil {
+            settings.readerFontSize = defaults.double(forKey: StorageKey.legacyEditorFontSize)
         }
 
-        if let rawValue = defaults.string(forKey: StorageKey.editorFontFamily),
-           let fontFamily = EditorFontFamily(rawValue: rawValue) {
-            settings.editorFontFamily = fontFamily
+        if let rawValue = defaults.string(forKey: StorageKey.readerFontFamily),
+           let fontFamily = ReaderFontFamily(rawValue: rawValue) {
+            settings.readerFontFamily = fontFamily
+        } else if let rawValue = defaults.string(forKey: StorageKey.legacyEditorFontFamily),
+                  let fontFamily = ReaderFontFamily.legacy(rawValue: rawValue) {
+            settings.readerFontFamily = fontFamily
         }
 
-        if defaults.object(forKey: StorageKey.editorLineHeight) != nil {
-            settings.editorLineHeight = defaults.double(forKey: StorageKey.editorLineHeight)
+        if defaults.object(forKey: StorageKey.readerLineHeight) != nil {
+            settings.readerLineHeight = defaults.double(forKey: StorageKey.readerLineHeight)
+        } else if defaults.object(forKey: StorageKey.legacyEditorLineHeight) != nil {
+            settings.readerLineHeight = defaults.double(forKey: StorageKey.legacyEditorLineHeight)
         }
 
-        if defaults.object(forKey: StorageKey.showLineNumbers) != nil {
-            settings.showLineNumbers = defaults.bool(forKey: StorageKey.showLineNumbers)
-        }
-
-        if defaults.object(forKey: StorageKey.wrapLines) != nil {
-            settings.wrapLines = defaults.bool(forKey: StorageKey.wrapLines)
-        }
-
-        if defaults.object(forKey: StorageKey.hideSyntax) != nil {
-            settings.hideSyntax = defaults.bool(forKey: StorageKey.hideSyntax)
-        }
-
-        if defaults.object(forKey: StorageKey.showPreview) != nil {
-            settings.showPreview = defaults.bool(forKey: StorageKey.showPreview)
+        if let rawValue = defaults.string(forKey: StorageKey.rendererChoice),
+           let choice = RendererChoice(rawValue: rawValue) {
+            settings.rendererChoice = choice
         }
 
         settings.clampValues()
@@ -81,42 +75,79 @@ extension AppSettings {
     }
 
     func save(to defaults: UserDefaults) {
-        defaults.set(editorFontSize, forKey: StorageKey.editorFontSize)
-        defaults.set(editorFontFamily.rawValue, forKey: StorageKey.editorFontFamily)
-        defaults.set(editorLineHeight, forKey: StorageKey.editorLineHeight)
-        defaults.set(showLineNumbers, forKey: StorageKey.showLineNumbers)
-        defaults.set(wrapLines, forKey: StorageKey.wrapLines)
-        defaults.set(hideSyntax, forKey: StorageKey.hideSyntax)
-        defaults.set(showPreview, forKey: StorageKey.showPreview)
+        defaults.set(readerFontSize, forKey: StorageKey.readerFontSize)
+        defaults.set(readerFontFamily.rawValue, forKey: StorageKey.readerFontFamily)
+        defaults.set(readerLineHeight, forKey: StorageKey.readerLineHeight)
+        defaults.set(rendererChoice.rawValue, forKey: StorageKey.rendererChoice)
     }
 }
 
-enum EditorFontFamily: String, CaseIterable, Equatable, Identifiable {
-    case sfMono
-    case menlo
-    case monaco
+enum RendererChoice: String, CaseIterable, Equatable, Identifiable {
+    case markdownUI
+    case native
 
     var id: String { rawValue }
 
     var label: String {
         switch self {
-        case .sfMono:
-            return "SF Mono"
-        case .menlo:
-            return "Menlo"
-        case .monaco:
-            return "Monaco"
+        case .markdownUI:
+            return "MarkdownUI (spike)"
+        case .native:
+            return "Native (AttributedString)"
+        }
+    }
+}
+
+enum ReaderFontFamily: String, CaseIterable, Equatable, Identifiable {
+    case system
+    case serif
+    case mono
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .system:
+            return "System Sans"
+        case .serif:
+            return "System Serif"
+        case .mono:
+            return "Monospaced"
         }
     }
 
     var cssValue: String {
         switch self {
-        case .sfMono:
-            return "-apple-system, BlinkMacSystemFont, 'SF Mono', Menlo, Monaco, monospace"
-        case .menlo:
-            return "Menlo, Monaco, monospace"
-        case .monaco:
-            return "Monaco, Menlo, monospace"
+        case .system:
+            return "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
+        case .serif:
+            return "'New York', Georgia, serif"
+        case .mono:
+            return "'SF Mono', Menlo, Monaco, monospace"
+        }
+    }
+
+    func swiftUIFont(size: Double) -> Font {
+        switch self {
+        case .system:
+            return .system(size: size, design: .default)
+        case .serif:
+            return .system(size: size, design: .serif)
+        case .mono:
+            return .system(size: size, design: .monospaced)
+        }
+    }
+
+    static func legacy(rawValue: String) -> ReaderFontFamily? {
+        switch rawValue {
+        case "system", "sfMono":
+            return .system
+        case "serif":
+            return .serif
+        case "mono", "menlo", "monaco":
+            return .mono
+        default:
+            return nil
         }
     }
 }

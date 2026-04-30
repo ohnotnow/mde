@@ -5,12 +5,12 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            Section("Editor") {
+            Section("Reader") {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text("Font Size")
                         Spacer()
-                        Text("\(Int(appModel.settings.editorFontSize)) pt")
+                        Text("\(Int(appModel.settings.readerFontSize)) pt")
                             .foregroundStyle(.secondary)
                     }
 
@@ -36,7 +36,7 @@ struct SettingsView: View {
                 }
 
                 Picker("Font", selection: fontFamilyBinding) {
-                    ForEach(EditorFontFamily.allCases) { family in
+                    ForEach(ReaderFontFamily.allCases) { family in
                         Text(family.label).tag(family)
                     }
                 }
@@ -45,7 +45,7 @@ struct SettingsView: View {
                     HStack {
                         Text("Line Height")
                         Spacer()
-                        Text(String(format: "%.1f", appModel.settings.editorLineHeight))
+                        Text(String(format: "%.1f", appModel.settings.readerLineHeight))
                             .foregroundStyle(.secondary)
                     }
 
@@ -55,66 +55,53 @@ struct SettingsView: View {
                         step: 0.1
                     )
                 }
+            }
 
-                Toggle("Show line numbers", isOn: showLineNumbersBinding)
-                Toggle("Wrap long lines", isOn: wrapLinesBinding)
-                Toggle("Hide Markdown syntax on inactive lines", isOn: hideSyntaxBinding)
-                Toggle("Show preview by default", isOn: showPreviewBinding)
+            Section("Rendering Engine") {
+                Picker("Renderer", selection: rendererBinding) {
+                    ForEach(RendererChoice.allCases) { choice in
+                        Text(choice.label).tag(choice)
+                    }
+                }
+
+                Text("Switch between renderers to compare quality on the current document.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
         .padding(20)
-        .frame(width: 420)
+        .frame(width: 460)
     }
 
     private var fontSizeBinding: Binding<Double> {
         Binding(
-            get: { appModel.settings.editorFontSize },
+            get: { appModel.settings.readerFontSize },
             set: { appModel.updateFontSize(to: $0) }
         )
     }
 
-    private var showPreviewBinding: Binding<Bool> {
+    private var fontFamilyBinding: Binding<ReaderFontFamily> {
         Binding(
-            get: { appModel.settings.showPreview },
-            set: { newValue in
-                appModel.settings.showPreview = newValue
-            }
-        )
-    }
-
-    private var fontFamilyBinding: Binding<EditorFontFamily> {
-        Binding(
-            get: { appModel.settings.editorFontFamily },
-            set: { appModel.settings.editorFontFamily = $0 }
+            get: { appModel.settings.readerFontFamily },
+            set: { appModel.settings.readerFontFamily = $0 }
         )
     }
 
     private var lineHeightBinding: Binding<Double> {
         Binding(
-            get: { appModel.settings.editorLineHeight },
-            set: { appModel.updateLineHeight(to: $0) }
+            get: { appModel.settings.readerLineHeight },
+            set: {
+                appModel.settings.readerLineHeight = $0
+                appModel.settings.clampValues()
+            }
         )
     }
 
-    private var showLineNumbersBinding: Binding<Bool> {
+    private var rendererBinding: Binding<RendererChoice> {
         Binding(
-            get: { appModel.settings.showLineNumbers },
-            set: { appModel.settings.showLineNumbers = $0 }
-        )
-    }
-
-    private var wrapLinesBinding: Binding<Bool> {
-        Binding(
-            get: { appModel.settings.wrapLines },
-            set: { appModel.settings.wrapLines = $0 }
-        )
-    }
-
-    private var hideSyntaxBinding: Binding<Bool> {
-        Binding(
-            get: { appModel.settings.hideSyntax },
-            set: { appModel.settings.hideSyntax = $0 }
+            get: { appModel.settings.rendererChoice },
+            set: { appModel.settings.rendererChoice = $0 }
         )
     }
 }

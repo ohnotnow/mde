@@ -8,22 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		011D9CB428C889AFC9362A9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5FEA92551FCB0AC2B720F55 /* Assets.xcassets */; };
-		0E88B3857FA4B07ACD78CFFD /* PreviewEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CB8E0296DC238165D3C0DD /* PreviewEngine.swift */; };
+		0E88B3857FA4B07ACD78CFFD /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CB8E0296DC238165D3C0DD /* MarkdownRenderer.swift */; };
 		143253BEED8EA3FCC7C3040A /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D37DBD5991399A99747ECF /* WorkspaceView.swift */; };
-		14B559FB4F811AE5D4C0227D /* MarkdownEditor in Frameworks */ = {isa = PBXBuildFile; productRef = B1A82E04A9FE2A4EA64FE409 /* MarkdownEditor */; };
-		3530F3331D364A21A5765C2B /* EditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8344D9D74CB19A1255C52E95 /* EditorEngine.swift */; };
 		4D66B762AC7E6F6CB5907AFD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEEEEE11FE1885FC15C9199 /* AppDelegate.swift */; };
 		6F5802D6D0D6829CC2F3B378 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E2B4D069D16A858DEF38F91 /* AppModel.swift */; };
 		70CA410D5D70A089727E2F39 /* FileDropOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BA39D81C85D220D418C74D /* FileDropOverlay.swift */; };
 		727A35EFCC16DA9FED3E219D /* FileDocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FF27206B9299729EF6ABBA /* FileDocumentService.swift */; };
-		76DAD7581D67ADDB9A83B05A /* PlainTextEditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE39A96FE0F4D4A77218A83 /* PlainTextEditorEngine.swift */; };
-		8FCA35205945A6D7646918EB /* CodeMirrorEditorEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4170991D3A5731687D45BC62 /* CodeMirrorEditorEngine.swift */; };
 		92B4AB1439EF6E6FBFBCE3E4 /* MarkdownDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518DBF03949FE4BCA68DEAB8 /* MarkdownDocument.swift */; };
 		9A63573086326B1E354CE91F /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6191F1475962CBC0821E190A /* AppSettings.swift */; };
 		A3B6BA51D6F42B9BD62E8A95 /* MDEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32ECE99600F9CD92261093E8 /* MDEApp.swift */; };
 		A6C62C950FEAB061825794E8 /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E903D066FDF24F3EB2E0DEF /* AppCommands.swift */; };
 		B99F08D6AB6E4FC7509C3D03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC321FD34CC0F889C8858A94 /* ContentView.swift */; };
-		F2892CEEA0C562572606D642 /* NativeMarkdownPreviewEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE6BDCD720E827476CC5107 /* NativeMarkdownPreviewEngine.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A2B3C4D5E6F7A8B9C0D1E2F3 /* MarkdownUI */; };
+		A4B5C6D7E8F9A0B1C2D3E4F5 /* MarkdownUIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B6C7D8E9F0A1B2C3D4E5F6 /* MarkdownUIRenderer.swift */; };
+		B1B2C3D4E5F6A7B8C9D0E1F2 /* Highlightr in Frameworks */ = {isa = PBXBuildFile; productRef = B2B3C4D5E6F7A8B9C0D1E2F3 /* Highlightr */; };
+		B4B5C6D7E8F9A0B1C2D3E4F5 /* NordSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B6C7D8E9F0A1B2C3D4E5F6 /* NordSyntaxHighlighter.swift */; };
+		F2892CEEA0C562572606D642 /* NativeMarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE6BDCD720E827476CC5107 /* NativeMarkdownRenderer.swift */; };
 		F6E039A562CEC67CB756FC8A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACFFB1D381702BECFAC1602 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,18 +32,17 @@
 		20BA39D81C85D220D418C74D /* FileDropOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDropOverlay.swift; sourceTree = "<group>"; };
 		251A7B2B5C27BF7F481E912A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		32ECE99600F9CD92261093E8 /* MDEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDEApp.swift; sourceTree = "<group>"; };
-		36CB8E0296DC238165D3C0DD /* PreviewEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEngine.swift; sourceTree = "<group>"; };
+		36CB8E0296DC238165D3C0DD /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		37FF27206B9299729EF6ABBA /* FileDocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDocumentService.swift; sourceTree = "<group>"; };
 		38EA0AAD1B059AAFF0391F45 /* MDE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MDE.entitlements; sourceTree = "<group>"; };
-		4170991D3A5731687D45BC62 /* CodeMirrorEditorEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeMirrorEditorEngine.swift; sourceTree = "<group>"; };
+		A5B6C7D8E9F0A1B2C3D4E5F6 /* MarkdownUIRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownUIRenderer.swift; sourceTree = "<group>"; };
+		B5B6C7D8E9F0A1B2C3D4E5F6 /* NordSyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NordSyntaxHighlighter.swift; sourceTree = "<group>"; };
 		4E2B4D069D16A858DEF38F91 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		518DBF03949FE4BCA68DEAB8 /* MarkdownDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownDocument.swift; sourceTree = "<group>"; };
 		5E903D066FDF24F3EB2E0DEF /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
-		5EE39A96FE0F4D4A77218A83 /* PlainTextEditorEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextEditorEngine.swift; sourceTree = "<group>"; };
 		6191F1475962CBC0821E190A /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
-		8344D9D74CB19A1255C52E95 /* EditorEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorEngine.swift; sourceTree = "<group>"; };
 		D6D37DBD5991399A99747ECF /* WorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceView.swift; sourceTree = "<group>"; };
-		DCE6BDCD720E827476CC5107 /* NativeMarkdownPreviewEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMarkdownPreviewEngine.swift; sourceTree = "<group>"; };
+		DCE6BDCD720E827476CC5107 /* NativeMarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMarkdownRenderer.swift; sourceTree = "<group>"; };
 		DDCB1224C026613C503FCF0F /* MDE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MDE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EACFFB1D381702BECFAC1602 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5FEA92551FCB0AC2B720F55 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -55,7 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14B559FB4F811AE5D4C0227D /* MarkdownEditor in Frameworks */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* MarkdownUI in Frameworks */,
+				B1B2C3D4E5F6A7B8C9D0E1F2 /* Highlightr in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,9 +91,8 @@
 				38EA0AAD1B059AAFF0391F45 /* MDE.entitlements */,
 				32ECE99600F9CD92261093E8 /* MDEApp.swift */,
 				03FE93EA095DB6FCDDD64948 /* Commands */,
-				F79BDA0A78E8F3117C007C57 /* Editor */,
 				CDCF707A35A725FC0F543B10 /* Models */,
-				BDFC63B510CADD47F01DDF48 /* Preview */,
+				BDFC63B510CADD47F01DDF48 /* Rendering */,
 				D279E61BC7954A6C5F6DB341 /* Services */,
 				0EA412B1C4A32024C260AECF /* Views */,
 			);
@@ -125,13 +124,15 @@
 			);
 			sourceTree = "<group>";
 		};
-		BDFC63B510CADD47F01DDF48 /* Preview */ = {
+		BDFC63B510CADD47F01DDF48 /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
-				DCE6BDCD720E827476CC5107 /* NativeMarkdownPreviewEngine.swift */,
-				36CB8E0296DC238165D3C0DD /* PreviewEngine.swift */,
+				36CB8E0296DC238165D3C0DD /* MarkdownRenderer.swift */,
+				A5B6C7D8E9F0A1B2C3D4E5F6 /* MarkdownUIRenderer.swift */,
+				DCE6BDCD720E827476CC5107 /* NativeMarkdownRenderer.swift */,
+				B5B6C7D8E9F0A1B2C3D4E5F6 /* NordSyntaxHighlighter.swift */,
 			);
-			path = Preview;
+			path = Rendering;
 			sourceTree = "<group>";
 		};
 		CDCF707A35A725FC0F543B10 /* Models */ = {
@@ -151,16 +152,6 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		F79BDA0A78E8F3117C007C57 /* Editor */ = {
-			isa = PBXGroup;
-			children = (
-				4170991D3A5731687D45BC62 /* CodeMirrorEditorEngine.swift */,
-				8344D9D74CB19A1255C52E95 /* EditorEngine.swift */,
-				5EE39A96FE0F4D4A77218A83 /* PlainTextEditorEngine.swift */,
-			);
-			path = Editor;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -178,7 +169,8 @@
 			);
 			name = MDE;
 			packageProductDependencies = (
-				B1A82E04A9FE2A4EA64FE409 /* MarkdownEditor */,
+				A2B3C4D5E6F7A8B9C0D1E2F3 /* MarkdownUI */,
+				B2B3C4D5E6F7A8B9C0D1E2F3 /* Highlightr */,
 			);
 			productName = MDE;
 			productReference = DDCB1224C026613C503FCF0F /* MDE.app */;
@@ -210,7 +202,8 @@
 			mainGroup = 68E75D96EF0C5C648E8985AA;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				39962C93DB2FC7D1458A51EA /* XCRemoteSwiftPackageReference "MarkdownEditor" */,
+				A3B4C5D6E7F8A9B0C1D2E3F4 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				B3B4C5D6E7F8A9B0C1D2E3F4 /* XCRemoteSwiftPackageReference "Highlightr" */,
 			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
@@ -241,16 +234,15 @@
 				4D66B762AC7E6F6CB5907AFD /* AppDelegate.swift in Sources */,
 				6F5802D6D0D6829CC2F3B378 /* AppModel.swift in Sources */,
 				9A63573086326B1E354CE91F /* AppSettings.swift in Sources */,
-				8FCA35205945A6D7646918EB /* CodeMirrorEditorEngine.swift in Sources */,
 				B99F08D6AB6E4FC7509C3D03 /* ContentView.swift in Sources */,
-				3530F3331D364A21A5765C2B /* EditorEngine.swift in Sources */,
 				727A35EFCC16DA9FED3E219D /* FileDocumentService.swift in Sources */,
 				70CA410D5D70A089727E2F39 /* FileDropOverlay.swift in Sources */,
 				A3B6BA51D6F42B9BD62E8A95 /* MDEApp.swift in Sources */,
 				92B4AB1439EF6E6FBFBCE3E4 /* MarkdownDocument.swift in Sources */,
-				F2892CEEA0C562572606D642 /* NativeMarkdownPreviewEngine.swift in Sources */,
-				76DAD7581D67ADDB9A83B05A /* PlainTextEditorEngine.swift in Sources */,
-				0E88B3857FA4B07ACD78CFFD /* PreviewEngine.swift in Sources */,
+				F2892CEEA0C562572606D642 /* NativeMarkdownRenderer.swift in Sources */,
+				A4B5C6D7E8F9A0B1C2D3E4F5 /* MarkdownUIRenderer.swift in Sources */,
+				B4B5C6D7E8F9A0B1C2D3E4F5 /* NordSyntaxHighlighter.swift in Sources */,
+				0E88B3857FA4B07ACD78CFFD /* MarkdownRenderer.swift in Sources */,
 				F6E039A562CEC67CB756FC8A /* SettingsView.swift in Sources */,
 				143253BEED8EA3FCC7C3040A /* WorkspaceView.swift in Sources */,
 			);
@@ -448,23 +440,37 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		39962C93DB2FC7D1458A51EA /* XCRemoteSwiftPackageReference "MarkdownEditor" */ = {
+		A3B4C5D6E7F8A9B0C1D2E3F4 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Pallepadehat/MarkdownEditor.git";
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 2.0.0;
+			};
+		};
+		B3B4C5D6E7F8A9B0C1D2E3F4 /* XCRemoteSwiftPackageReference "Highlightr" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/raspu/Highlightr";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B1A82E04A9FE2A4EA64FE409 /* MarkdownEditor */ = {
+		A2B3C4D5E6F7A8B9C0D1E2F3 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 39962C93DB2FC7D1458A51EA /* XCRemoteSwiftPackageReference "MarkdownEditor" */;
-			productName = MarkdownEditor;
+			package = A3B4C5D6E7F8A9B0C1D2E3F4 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+		B2B3C4D5E6F7A8B9C0D1E2F3 /* Highlightr */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3B4C5D6E7F8A9B0C1D2E3F4 /* XCRemoteSwiftPackageReference "Highlightr" */;
+			productName = Highlightr;
 		};
 /* End XCSwiftPackageProductDependency section */
+
 	};
 	rootObject = E6D2F87500A18B85B09F6501 /* Project object */;
 }

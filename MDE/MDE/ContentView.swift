@@ -14,11 +14,7 @@ struct ContentView: View {
         WorkspaceView(
             document: $appModel.document,
             settings: $appModel.settings,
-            editorEngine: appModel.editorEngine,
-            previewEngine: appModel.previewEngine,
-            onIncreaseFontSize: appModel.increaseFontSize,
-            onDecreaseFontSize: appModel.decreaseFontSize,
-            onResetFontSize: appModel.resetFontSize,
+            renderer: appModel.renderer,
             onOpenDroppedFile: appModel.openDroppedDocument(at:)
         )
         .onOpenURL { url in
@@ -36,23 +32,6 @@ struct ContentView: View {
                 Text(appModel.alertMessage ?? "An unknown error occurred.")
             }
         )
-        .confirmationDialog(
-            appModel.pendingConfirmation?.title ?? "",
-            isPresented: confirmationIsPresented,
-            titleVisibility: .visible,
-            actions: {
-                Button("Discard Changes", role: .destructive) {
-                    appModel.confirmPendingAction()
-                }
-
-                Button("Cancel", role: .cancel) {
-                    appModel.cancelPendingAction()
-                }
-            },
-            message: {
-                Text(appModel.pendingConfirmation?.message ?? "")
-            }
-        )
     }
 
     private var alertIsPresented: Binding<Bool> {
@@ -61,17 +40,6 @@ struct ContentView: View {
             set: { isPresented in
                 if !isPresented {
                     appModel.dismissAlert()
-                }
-            }
-        )
-    }
-
-    private var confirmationIsPresented: Binding<Bool> {
-        Binding(
-            get: { appModel.pendingConfirmation != nil },
-            set: { isPresented in
-                if !isPresented {
-                    appModel.cancelPendingAction()
                 }
             }
         )

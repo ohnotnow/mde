@@ -8,18 +8,24 @@ final class AppModel: ObservableObject {
     @Published var document = MarkdownDocument.sample
     @Published var settings: AppSettings
     @Published var alertMessage: String?
-    @Published var pendingConfirmation: PendingConfirmation?
 
-    let editorEngine: any EditorEngine
-    let previewEngine: any PreviewEngine
+    private let nativeRenderer = NativeMarkdownRenderer()
+    private let markdownUIRenderer = MarkdownUIRenderer()
     private let fileService: FileDocumentService
     private let defaults: UserDefaults
     private var cancellables = Set<AnyCancellable>()
 
+    var renderer: any MarkdownRenderer {
+        switch settings.rendererChoice {
+        case .markdownUI:
+            return markdownUIRenderer
+        case .native:
+            return nativeRenderer
+        }
+    }
+
     init() {
         self.defaults = .standard
-        self.editorEngine = CodeMirrorEditorEngine()
-        self.previewEngine = NativeMarkdownPreviewEngine()
         self.fileService = FileDocumentService()
         self.settings = AppSettings.load(from: defaults)
 
@@ -31,39 +37,36 @@ final class AppModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    var canSave: Bool {
-        document.isDirty || document.fileURL != nil
-    }
-
     var recentDocuments: [URL] {
         NSDocumentController.shared.recentDocumentURLs.filter(fileService.canOpen)
     }
 
-    func newDocument() {
-        guardIfNeeded(for: .newDocument) {
-            self.document = MarkdownDocument.empty
-        }
-    }
-
     func openDocument() {
-        guardIfNeeded(for: .openDocument) {
-            do {
-                let opened = try self.fileService.openMarkdownDocument()
-                self.document = opened
-            } catch FileDialogCancellation.cancelled {
-                return
-            } catch {
-                self.presentError(error)
-            }
+        do {
+            let opened = try self.fileService.openMarkdownDocument()
+            self.document = opened
+        } catch FileDialogCancellation.cancelled {
+            return
+        } catch {
+            self.presentError(error)
         }
     }
 
     func openDocument(at url: URL) {
-        openDocument(at: url, requiresConfirmation: true)
+        guard fileService.canOpen(url) else {
+            alertMessage = "The selected file type is not supported."
+            return
+        }
+
+        do {
+            document = try fileService.loadDocument(from: url)
+        } catch {
+            presentError(error)
+        }
     }
 
     func openDroppedDocument(at url: URL) {
-        openDocument(at: url, requiresConfirmation: false)
+        openDocument(at: url)
     }
 
     func openRecentDocument(_ url: URL) {
@@ -73,32 +76,6 @@ final class AppModel: ObservableObject {
     func clearRecentDocuments() {
         NSDocumentController.shared.clearRecentDocuments(nil)
         objectWillChange.send()
-    }
-
-    func saveDocument() {
-        do {
-            let saved = try fileService.save(document: document)
-            document = saved
-        } catch FileDialogCancellation.cancelled {
-            return
-        } catch {
-            presentError(error)
-        }
-    }
-
-    func saveDocumentAs() {
-        do {
-            let saved = try fileService.saveAs(document: document)
-            document = saved
-        } catch FileDialogCancellation.cancelled {
-            return
-        } catch {
-            presentError(error)
-        }
-    }
-
-    func togglePreview() {
-        settings.showPreview.toggle()
     }
 
     func increaseFontSize() {
@@ -114,12 +91,7 @@ final class AppModel: ObservableObject {
     }
 
     func updateFontSize(to value: Double) {
-        settings.editorFontSize = value
-        settings.clampValues()
-    }
-
-    func updateLineHeight(to value: Double) {
-        settings.editorLineHeight = value
+        settings.readerFontSize = value
         settings.clampValues()
     }
 
@@ -127,86 +99,7 @@ final class AppModel: ObservableObject {
         alertMessage = nil
     }
 
-    func confirmPendingAction() {
-        guard let pendingConfirmation else {
-            return
-        }
-
-        self.pendingConfirmation = nil
-        pendingConfirmation.action()
-    }
-
-    func cancelPendingAction() {
-        pendingConfirmation = nil
-    }
-
-    private func guardIfNeeded(
-        for action: ConfirmedAction,
-        perform work: @escaping @MainActor () -> Void
-    ) {
-        guard document.isDirty else {
-            work()
-            return
-        }
-
-        pendingConfirmation = PendingConfirmation(
-            title: action.confirmationTitle,
-            message: action.confirmationMessage
-        ) {
-            work()
-        }
-    }
-
     private func presentError(_ error: Error) {
         alertMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-    }
-
-    private func openDocument(at url: URL, requiresConfirmation: Bool) {
-        guard fileService.canOpen(url) else {
-            alertMessage = "The selected file type is not supported."
-            return
-        }
-
-        let openFile = { @MainActor in
-            do {
-                self.document = try self.fileService.loadDocument(from: url)
-            } catch {
-                self.presentError(error)
-            }
-        }
-
-        if requiresConfirmation {
-            guardIfNeeded(for: .openDocument, perform: openFile)
-        } else {
-            pendingConfirmation = nil
-            openFile()
-        }
-    }
-}
-
-extension AppModel {
-    struct PendingConfirmation: Identifiable {
-        let id = UUID()
-        let title: String
-        let message: String
-        let action: @MainActor () -> Void
-    }
-
-    enum ConfirmedAction {
-        case newDocument
-        case openDocument
-
-        var confirmationTitle: String {
-            switch self {
-            case .newDocument:
-                return "Discard unsaved changes?"
-            case .openDocument:
-                return "Open another file and discard changes?"
-            }
-        }
-
-        var confirmationMessage: String {
-            "Your current document has unsaved changes."
-        }
     }
 }
