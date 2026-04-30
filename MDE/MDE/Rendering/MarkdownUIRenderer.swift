@@ -254,7 +254,7 @@ struct FileBackedImage: View {
                 Image(nsImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxWidth: image.size.width)
+                    .frame(maxWidth: .infinity)
             } else if didAttemptLoad {
                 placeholder
             } else {
