@@ -179,19 +179,18 @@ extension Theme {
             BackgroundColor(.secondary.opacity(0.18))
         }
         .codeBlock { configuration in
-            ScrollView(.horizontal, showsIndicators: false) {
-                configuration.label
-                    .relativeLineSpacing(.em(0.25))
-                    .markdownTextStyle {
-                        FontFamilyVariant(.monospaced)
-                        FontSize(.em(0.95))
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 16)
-            }
-            .background(Color.nordPolarNight)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .markdownMargin(top: .em(0.9), bottom: .em(0.3))
+            configuration.label
+                .relativeLineSpacing(.em(0.25))
+                .markdownTextStyle {
+                    FontFamilyVariant(.monospaced)
+                    FontSize(.em(0.95))
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.nordPolarNight)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .markdownMargin(top: .em(0.9), bottom: .em(0.3))
         }
     }
 }

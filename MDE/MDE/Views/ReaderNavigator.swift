@@ -71,6 +71,25 @@ final class ReaderNavigator: ObservableObject {
         scrollView.reflectScrolledClipView(scrollView.contentView)
     }
 
+    func lineDown() {
+        guard let scrollView, let docView = scrollView.documentView else { return }
+        let visible = scrollView.contentView.bounds
+        let maxY = max(0, docView.frame.height - visible.height)
+        let target = min(maxY, visible.origin.y + lineStep)
+        scrollView.contentView.scroll(to: NSPoint(x: 0, y: target))
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+    }
+
+    func lineUp() {
+        guard let scrollView else { return }
+        let visible = scrollView.contentView.bounds
+        let target = max(0, visible.origin.y - lineStep)
+        scrollView.contentView.scroll(to: NSPoint(x: 0, y: target))
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+    }
+
+    private var lineStep: CGFloat { 28 }
+
     func performFind(forward: Bool) {
         let trimmed = findQuery.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
@@ -226,6 +245,19 @@ final class KeyAwareScrollView: NSScrollView {
             if chars == "/" && bare.isEmpty {
                 navigator.showFindBar()
                 return true
+            }
+        }
+
+        if bare.isEmpty {
+            switch event.keyCode {
+            case 126:
+                navigator.lineUp()
+                return true
+            case 125:
+                navigator.lineDown()
+                return true
+            default:
+                break
             }
         }
 
