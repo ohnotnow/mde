@@ -11,6 +11,7 @@ struct AppSettings: Equatable {
     var readerFontSize: Double = AppSettings.defaultFontSize
     var readerFontFamily: ReaderFontFamily = .serif
     var readerLineHeight: Double = 1.5
+    var externalEditor: ExternalEditorPreference = .systemDefault
 
     mutating func increaseFontSize() {
         readerFontSize = min(readerFontSize + 1, Self.maximumFontSize)
@@ -35,6 +36,7 @@ extension AppSettings {
         static let readerFontSize = "settings.readerFontSize"
         static let readerFontFamily = "settings.readerFontFamily"
         static let readerLineHeight = "settings.readerLineHeight"
+        static let externalEditor = "settings.externalEditor"
         static let legacyEditorFontSize = "settings.editorFontSize"
         static let legacyEditorFontFamily = "settings.editorFontFamily"
         static let legacyEditorLineHeight = "settings.editorLineHeight"
@@ -63,6 +65,11 @@ extension AppSettings {
             settings.readerLineHeight = defaults.double(forKey: StorageKey.legacyEditorLineHeight)
         }
 
+        if let rawValue = defaults.string(forKey: StorageKey.externalEditor),
+           let preference = ExternalEditorPreference(storageValue: rawValue) {
+            settings.externalEditor = preference
+        }
+
         settings.clampValues()
         return settings
     }
@@ -71,6 +78,44 @@ extension AppSettings {
         defaults.set(readerFontSize, forKey: StorageKey.readerFontSize)
         defaults.set(readerFontFamily.storageValue, forKey: StorageKey.readerFontFamily)
         defaults.set(readerLineHeight, forKey: StorageKey.readerLineHeight)
+
+        switch externalEditor.storageValue {
+        case .some(let value):
+            defaults.set(value, forKey: StorageKey.externalEditor)
+        case .none:
+            defaults.removeObject(forKey: StorageKey.externalEditor)
+        }
+    }
+}
+
+enum ExternalEditorPreference: Equatable, Hashable {
+    case systemDefault
+    case bundleID(String)
+    case customApp(URL)
+
+    var storageValue: String? {
+        switch self {
+        case .systemDefault:
+            return nil
+        case .bundleID(let id):
+            return "bundle:\(id)"
+        case .customApp(let url):
+            return "path:\(url.path)"
+        }
+    }
+
+    init?(storageValue: String) {
+        if storageValue.hasPrefix("bundle:") {
+            let id = String(storageValue.dropFirst("bundle:".count))
+            guard !id.isEmpty else { return nil }
+            self = .bundleID(id)
+        } else if storageValue.hasPrefix("path:") {
+            let path = String(storageValue.dropFirst("path:".count))
+            guard !path.isEmpty else { return nil }
+            self = .customApp(URL(fileURLWithPath: path))
+        } else {
+            return nil
+        }
     }
 }
 

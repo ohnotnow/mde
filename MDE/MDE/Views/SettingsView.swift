@@ -7,6 +7,9 @@ struct SettingsView: View {
     private let installedFontFamilies: [String] =
         NSFontManager.shared.availableFontFamilies.sorted()
 
+    private let installedEditors: [ExternalEditor] =
+        ExternalEditorService().installedEditors()
+
     var body: some View {
         Form {
             Section("Reader") {
@@ -69,6 +72,35 @@ struct SettingsView: View {
                 }
             }
 
+            Section("External Editor") {
+                Picker("Editor", selection: externalEditorBinding) {
+                    Text("System Default").tag(ExternalEditorPreference.systemDefault)
+
+                    if !installedEditors.isEmpty {
+                        Section("Detected") {
+                            ForEach(installedEditors) { editor in
+                                Text(editor.displayName)
+                                    .tag(ExternalEditorPreference.bundleID(editor.bundleID))
+                            }
+                        }
+                    }
+
+                    if case .customApp(let url) = appModel.settings.externalEditor {
+                        Section("Custom") {
+                            Text(url.deletingPathExtension().lastPathComponent)
+                                .tag(ExternalEditorPreference.customApp(url))
+                        }
+                    }
+                }
+
+                Button("Choose Other Application…") {
+                    chooseCustomEditor()
+                }
+
+                Text("Used by File → Open in External Editor (⇧⌘E). The preview reloads automatically when the editor saves.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
         .padding(20)
@@ -97,5 +129,25 @@ struct SettingsView: View {
                 appModel.settings.clampValues()
             }
         )
+    }
+
+    private var externalEditorBinding: Binding<ExternalEditorPreference> {
+        Binding(
+            get: { appModel.settings.externalEditor },
+            set: { appModel.settings.externalEditor = $0 }
+        )
+    }
+
+    private func chooseCustomEditor() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = [.applicationBundle]
+        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        panel.message = "Choose an editor application."
+
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        appModel.settings.externalEditor = .customApp(url)
     }
 }

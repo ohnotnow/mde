@@ -33,6 +33,14 @@ struct AppCommands: Commands {
 
             Divider()
 
+            Button("Open in External Editor") {
+                appModel.openInExternalEditor()
+            }
+            .keyboardShortcut("e", modifiers: [.command, .shift])
+            .disabled(!appModel.canOpenInExternalEditor)
+
+            Divider()
+
             Button("Close") {
                 NSApp.keyWindow?.performClose(nil)
             }

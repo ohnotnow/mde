@@ -24,6 +24,8 @@
 		B4B5C6D7E8F9A0B1C2D3E4F5 /* NordSyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B6C7D8E9F0A1B2C3D4E5F6 /* NordSyntaxHighlighter.swift */; };
 		D1E2F3A4B5C6D7E8F9A0B1C2 /* ReaderNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B6C7D8E9F0A1B2 /* ReaderNavigator.swift */; };
 		F6E039A562CEC67CB756FC8A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACFFB1D381702BECFAC1602 /* SettingsView.swift */; };
+		BB93094DF6A14BD5B4A19FD3 /* ExternalEditorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF40B33B0DB4A29AE69214C /* ExternalEditorService.swift */; };
+		67F9D679EF2446F58A3F31B3 /* FileWatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9D2A5C446C474494F158CB /* FileWatchService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +47,8 @@
 		EACFFB1D381702BECFAC1602 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5FEA92551FCB0AC2B720F55 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC321FD34CC0F889C8858A94 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		DFF40B33B0DB4A29AE69214C /* ExternalEditorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEditorService.swift; sourceTree = "<group>"; };
+		DB9D2A5C446C474494F158CB /* FileWatchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWatchService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,7 +148,9 @@
 		D279E61BC7954A6C5F6DB341 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				DFF40B33B0DB4A29AE69214C /* ExternalEditorService.swift */,
 				37FF27206B9299729EF6ABBA /* FileDocumentService.swift */,
+				DB9D2A5C446C474494F158CB /* FileWatchService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -232,7 +238,9 @@
 				6F5802D6D0D6829CC2F3B378 /* AppModel.swift in Sources */,
 				9A63573086326B1E354CE91F /* AppSettings.swift in Sources */,
 				B99F08D6AB6E4FC7509C3D03 /* ContentView.swift in Sources */,
+				BB93094DF6A14BD5B4A19FD3 /* ExternalEditorService.swift in Sources */,
 				727A35EFCC16DA9FED3E219D /* FileDocumentService.swift in Sources */,
+				67F9D679EF2446F58A3F31B3 /* FileWatchService.swift in Sources */,
 				70CA410D5D70A089727E2F39 /* FileDropOverlay.swift in Sources */,
 				A3B6BA51D6F42B9BD62E8A95 /* MDEApp.swift in Sources */,
 				92B4AB1439EF6E6FBFBCE3E4 /* MarkdownDocument.swift in Sources */,
