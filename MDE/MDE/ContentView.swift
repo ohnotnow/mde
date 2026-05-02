@@ -18,6 +18,14 @@ struct ContentView: View {
             onQuickEditExit: appModel.endQuickEdit(exitCode:),
             onOpenDroppedFile: appModel.openDroppedDocument(at:)
         )
+        .overlay(alignment: .top) {
+            if let notice = appModel.transientNotice {
+                TransientNoticeView(notice: notice)
+                    .padding(.top, 12)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: appModel.transientNotice?.id)
         .onOpenURL { url in
             appModel.openDocument(at: url)
         }

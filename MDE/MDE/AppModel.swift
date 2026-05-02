@@ -9,6 +9,7 @@ final class AppModel: ObservableObject {
     @Published var settings: AppSettings
     @Published var alertMessage: String?
     @Published var quickEditSession: QuickEditSession?
+    @Published var transientNotice: TransientNotice?
 
     private let fileService: FileDocumentService
     private let externalEditorService: ExternalEditorService
@@ -16,6 +17,7 @@ final class AppModel: ObservableObject {
     private let fileWatcher: FileWatchService
     private let defaults: UserDefaults
     private var cancellables = Set<AnyCancellable>()
+    private var noticeDismissTask: Task<Void, Never>?
 
     init() {
         self.defaults = .standard
@@ -63,9 +65,7 @@ final class AppModel: ObservableObject {
     }
 
     var canStartQuickEdit: Bool {
-        document.fileURL != nil
-            && !settings.internalEditorCommand.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            && quickEditSession == nil
+        document.fileURL != nil && quickEditSession == nil
     }
 
     func openDocument() {
@@ -115,7 +115,7 @@ final class AppModel: ObservableObject {
 
         let command = settings.internalEditorCommand.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !command.isEmpty else {
-            alertMessage = "No internal editor configured. Open Settings (⌘,) and set one under Internal Editor."
+            showTransientNotice("Pick an internal editor in Settings (⌘,) before using Quick Edit.")
             return
         }
 
@@ -184,6 +184,22 @@ final class AppModel: ObservableObject {
 
     func dismissAlert() {
         alertMessage = nil
+    }
+
+    func showTransientNotice(_ message: String) {
+        noticeDismissTask?.cancel()
+        let notice = TransientNotice(message: message)
+        transientNotice = notice
+        noticeDismissTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 3_500_000_000)
+            if Task.isCancelled { return }
+            await MainActor.run {
+                guard let self else { return }
+                if self.transientNotice?.id == notice.id {
+                    self.transientNotice = nil
+                }
+            }
+        }
     }
 
     private func makeEditorEnvironment() -> [String] {

@@ -8,6 +8,8 @@ A native macOS Markdown viewer. Double-click a `.md` file in Finder, get a nicel
 
 `mde` opens Markdown files (`.md`, `.markdown`, `.mdown`, `.mkd`) and renders them for reading: decent typography, syntax-highlighted code blocks, and YAML front-matter pulled out and shown as metadata above the body instead of being mangled into a giant heading. It is a viewer, not an editor. Files open via Finder, drag-and-drop, the standard Open dialog, or Open Recent.
 
+For quick fixes without leaving the window, `⌘E` opens the current file in an inline terminal running your preferred TUI editor (`vim`, `nvim`, `nano`, etc.) and `⇧⌘E` hands it off to a GUI editor (VS Code, Cursor, Sublime, etc.). Both are configured in **mde → Settings…**, and the preview auto-reloads when the editor saves.
+
 ## Quick install (no Xcode required)
 
 Grab the latest `MDE-vX.Y.Z.zip` from the [Releases page](https://github.com/ohnotnow/mde/releases), expand it, and drag `MDE.app` into `/Applications`. Built on GitHub's macOS runners, ad-hoc signed.

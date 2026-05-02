@@ -32,6 +32,7 @@
 		5CC33D098B694648852CF279 /* QuickEditPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CABF5646084DD6904DE3B6 /* QuickEditPane.swift */; };
 		F9395792766F4D088ED24AB2 /* QuickEditSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A0C1BC96444DE94522988 /* QuickEditSession.swift */; };
 		DF019EC1023648DD9C10CFDD /* QuickEditTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202279AB16A9474B9339930E /* QuickEditTerminalView.swift */; };
+		D517114A33494DA88562C27E /* TransientNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C179D86A17924CBC9558F595 /* TransientNoticeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		27CABF5646084DD6904DE3B6 /* QuickEditPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickEditPane.swift; sourceTree = "<group>"; };
 		487A0C1BC96444DE94522988 /* QuickEditSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickEditSession.swift; sourceTree = "<group>"; };
 		202279AB16A9474B9339930E /* QuickEditTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickEditTerminalView.swift; sourceTree = "<group>"; };
+		C179D86A17924CBC9558F595 /* TransientNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransientNoticeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				20BA39D81C85D220D418C74D /* FileDropOverlay.swift */,
 				C1D2E3F4A5B6C7D8E9F0A1B2 /* ReaderNavigator.swift */,
 				EACFFB1D381702BECFAC1602 /* SettingsView.swift */,
+				C179D86A17924CBC9558F595 /* TransientNoticeView.swift */,
 				D6D37DBD5991399A99747ECF /* WorkspaceView.swift */,
 			);
 			path = Views;
@@ -279,6 +282,7 @@
 				F9395792766F4D088ED24AB2 /* QuickEditSession.swift in Sources */,
 				DF019EC1023648DD9C10CFDD /* QuickEditTerminalView.swift in Sources */,
 				F6E039A562CEC67CB756FC8A /* SettingsView.swift in Sources */,
+				D517114A33494DA88562C27E /* TransientNoticeView.swift in Sources */,
 				143253BEED8EA3FCC7C3040A /* WorkspaceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

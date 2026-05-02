@@ -52,9 +52,12 @@ struct MarkdownReaderView: View {
             }
 
         if let highlighter = NordSyntaxHighlighter.shared {
-            markdown.markdownCodeSyntaxHighlighter(highlighter)
+            markdown
+                .markdownCodeSyntaxHighlighter(highlighter)
+                .textSelection(.enabled)
         } else {
             markdown
+                .textSelection(.enabled)
         }
     }
 

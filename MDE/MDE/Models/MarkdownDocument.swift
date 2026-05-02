@@ -52,8 +52,7 @@ extension MarkdownDocument {
         - Comfortable typography for longer reading sessions
         - Zoom controls and lightweight reader settings
         - A simpler architecture centered on rendering quality first
-
-        > This app is a viewer. Rendering is the product.
+        - Quick edits using a terminal or external editor
         """,
         fileURL: nil
     )
