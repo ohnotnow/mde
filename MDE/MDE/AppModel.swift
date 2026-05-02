@@ -8,9 +8,11 @@ final class AppModel: ObservableObject {
     @Published var document = MarkdownDocument.sample
     @Published var settings: AppSettings
     @Published var alertMessage: String?
+    @Published var quickEditSession: QuickEditSession?
 
     private let fileService: FileDocumentService
     private let externalEditorService: ExternalEditorService
+    private let internalEditorService: InternalEditorService
     private let fileWatcher: FileWatchService
     private let defaults: UserDefaults
     private var cancellables = Set<AnyCancellable>()
@@ -19,8 +21,13 @@ final class AppModel: ObservableObject {
         self.defaults = .standard
         self.fileService = FileDocumentService()
         self.externalEditorService = ExternalEditorService()
+        self.internalEditorService = InternalEditorService()
         self.fileWatcher = FileWatchService()
         self.settings = AppSettings.load(from: defaults)
+
+        DispatchQueue.global(qos: .utility).async {
+            _ = LoginShellEnvironment.shared
+        }
 
         fileWatcher.onChange = { [weak self] in
             self?.reloadCurrentDocument()
@@ -53,6 +60,12 @@ final class AppModel: ObservableObject {
 
     var canOpenInExternalEditor: Bool {
         document.fileURL != nil
+    }
+
+    var canStartQuickEdit: Bool {
+        document.fileURL != nil
+            && !settings.internalEditorCommand.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && quickEditSession == nil
     }
 
     func openDocument() {
@@ -90,6 +103,41 @@ final class AppModel: ObservableObject {
     func clearRecentDocuments() {
         NSDocumentController.shared.clearRecentDocuments(nil)
         objectWillChange.send()
+    }
+
+    func beginQuickEdit() {
+        guard quickEditSession == nil else { return }
+
+        guard let fileURL = document.fileURL else {
+            alertMessage = "Save the document before opening Quick Edit."
+            return
+        }
+
+        let command = settings.internalEditorCommand.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !command.isEmpty else {
+            alertMessage = "No internal editor configured. Open Settings (⌘,) and set one under Internal Editor."
+            return
+        }
+
+        guard let resolved = internalEditorService.resolveExecutable(forCommand: command) else {
+            alertMessage = "Couldn't find “\(command)” on your PATH. Open Settings (⌘,) to choose a different editor."
+            return
+        }
+
+        quickEditSession = QuickEditSession(
+            executable: resolved.executable,
+            arguments: resolved.arguments,
+            environment: makeEditorEnvironment(),
+            fileURL: fileURL,
+            editorCommand: command
+        )
+    }
+
+    func endQuickEdit(exitCode: Int32?) {
+        quickEditSession = nil
+        if let exitCode, exitCode != 0 {
+            alertMessage = "The internal editor exited with code \(exitCode)."
+        }
     }
 
     func openInExternalEditor() {
@@ -135,6 +183,22 @@ final class AppModel: ObservableObject {
 
     func dismissAlert() {
         alertMessage = nil
+    }
+
+    private func makeEditorEnvironment() -> [String] {
+        let inherit = ProcessInfo.processInfo.environment
+        let preserveKeys = ["HOME", "USER", "LOGNAME", "LANG", "LC_ALL", "LC_CTYPE", "TMPDIR", "TZ"]
+
+        var env: [String: String] = [:]
+        for key in preserveKeys {
+            if let value = inherit[key] {
+                env[key] = value
+            }
+        }
+        env["PATH"] = LoginShellEnvironment.shared.path
+        env["TERM"] = "xterm-256color"
+
+        return env.map { "\($0.key)=\($0.value)" }
     }
 
     private func reloadCurrentDocument() {

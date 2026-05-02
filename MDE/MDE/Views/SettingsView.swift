@@ -10,6 +10,9 @@ struct SettingsView: View {
     private let installedEditors: [ExternalEditor] =
         ExternalEditorService().installedEditors()
 
+    private let installedInternalEditors: [DetectedInternalEditor] =
+        InternalEditorService().installedEditors()
+
     var body: some View {
         Form {
             Section("Reader") {
@@ -101,6 +104,33 @@ struct SettingsView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+
+            Section("Internal Editor") {
+                TextField("Command", text: internalEditorBinding, prompt: Text("e.g. nvim"))
+                    .autocorrectionDisabled()
+
+                if !installedInternalEditors.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Detected on your PATH")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+
+                        HStack(spacing: 6) {
+                            ForEach(installedInternalEditors) { editor in
+                                Button(editor.displayName) {
+                                    appModel.settings.internalEditorCommand = editor.command
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                            }
+                        }
+                    }
+                }
+
+                Text("Used by File → Quick Edit (⌘E) — runs inside an embedded terminal pane. TUI editors only; GUI editors with a `--wait` flag belong in the External Editor setting above.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
         .padding(20)
@@ -135,6 +165,13 @@ struct SettingsView: View {
         Binding(
             get: { appModel.settings.externalEditor },
             set: { appModel.settings.externalEditor = $0 }
+        )
+    }
+
+    private var internalEditorBinding: Binding<String> {
+        Binding(
+            get: { appModel.settings.internalEditorCommand },
+            set: { appModel.settings.internalEditorCommand = $0 }
         )
     }
 

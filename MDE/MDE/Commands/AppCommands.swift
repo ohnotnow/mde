@@ -33,6 +33,12 @@ struct AppCommands: Commands {
 
             Divider()
 
+            Button("Quick Edit") {
+                appModel.beginQuickEdit()
+            }
+            .keyboardShortcut("e", modifiers: [.command])
+            .disabled(!appModel.canStartQuickEdit)
+
             Button("Open in External Editor") {
                 appModel.openInExternalEditor()
             }

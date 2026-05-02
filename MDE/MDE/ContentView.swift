@@ -14,6 +14,8 @@ struct ContentView: View {
         WorkspaceView(
             document: $appModel.document,
             settings: $appModel.settings,
+            quickEditSession: appModel.quickEditSession,
+            onQuickEditExit: appModel.endQuickEdit(exitCode:),
             onOpenDroppedFile: appModel.openDroppedDocument(at:)
         )
         .onOpenURL { url in

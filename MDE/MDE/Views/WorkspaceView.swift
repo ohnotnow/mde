@@ -5,13 +5,25 @@ struct WorkspaceView: View {
     @Binding var document: MarkdownDocument
     @Binding var settings: AppSettings
 
+    let quickEditSession: QuickEditSession?
+    let onQuickEditExit: (Int32?) -> Void
     let onOpenDroppedFile: (URL) -> Void
 
     @StateObject private var navigator = ReaderNavigator()
     @State private var isDropTargeted = false
 
     var body: some View {
-        readerPane
+        VStack(spacing: 0) {
+            readerPane
+
+            if let session = quickEditSession {
+                Divider()
+                QuickEditPane(session: session, onExit: onQuickEditExit)
+                    .frame(minHeight: 200, idealHeight: 320, maxHeight: 480)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.18), value: quickEditSession?.id)
         .frame(minWidth: 920, minHeight: 640)
         .background(WindowConfigurationView(document: document))
         .focusedSceneValue(\.readerNavigator, navigator)

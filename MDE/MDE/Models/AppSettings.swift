@@ -12,6 +12,7 @@ struct AppSettings: Equatable {
     var readerFontFamily: ReaderFontFamily = .serif
     var readerLineHeight: Double = 1.5
     var externalEditor: ExternalEditorPreference = .systemDefault
+    var internalEditorCommand: String = ""
 
     mutating func increaseFontSize() {
         readerFontSize = min(readerFontSize + 1, Self.maximumFontSize)
@@ -37,6 +38,7 @@ extension AppSettings {
         static let readerFontFamily = "settings.readerFontFamily"
         static let readerLineHeight = "settings.readerLineHeight"
         static let externalEditor = "settings.externalEditor"
+        static let internalEditorCommand = "settings.internalEditorCommand"
         static let legacyEditorFontSize = "settings.editorFontSize"
         static let legacyEditorFontFamily = "settings.editorFontFamily"
         static let legacyEditorLineHeight = "settings.editorLineHeight"
@@ -70,6 +72,10 @@ extension AppSettings {
             settings.externalEditor = preference
         }
 
+        if let command = defaults.string(forKey: StorageKey.internalEditorCommand) {
+            settings.internalEditorCommand = command
+        }
+
         settings.clampValues()
         return settings
     }
@@ -84,6 +90,13 @@ extension AppSettings {
             defaults.set(value, forKey: StorageKey.externalEditor)
         case .none:
             defaults.removeObject(forKey: StorageKey.externalEditor)
+        }
+
+        let trimmedCommand = internalEditorCommand.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedCommand.isEmpty {
+            defaults.removeObject(forKey: StorageKey.internalEditorCommand)
+        } else {
+            defaults.set(trimmedCommand, forKey: StorageKey.internalEditorCommand)
         }
     }
 }
