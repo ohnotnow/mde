@@ -25,5 +25,18 @@ struct QuickEditPane: View {
 
             QuickEditTerminalView(session: session, onExit: onExit)
         }
+        .frame(minHeight: minHeight, idealHeight: idealHeight, maxHeight: maxHeight)
+    }
+
+    private var minHeight: CGFloat {
+        max(180, CGFloat(session.fontSize) * 12)
+    }
+
+    private var idealHeight: CGFloat {
+        max(280, CGFloat(session.fontSize) * 22)
+    }
+
+    private var maxHeight: CGFloat {
+        min(720, max(420, CGFloat(session.fontSize) * 32))
     }
 }

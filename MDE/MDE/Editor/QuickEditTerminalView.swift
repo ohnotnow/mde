@@ -9,6 +9,7 @@ struct QuickEditTerminalView: NSViewRepresentable {
     func makeNSView(context: Context) -> LocalProcessTerminalView {
         let view = LocalProcessTerminalView(frame: .zero)
         view.processDelegate = context.coordinator
+        view.font = NSFont.monospacedSystemFont(ofSize: CGFloat(session.fontSize), weight: .regular)
         view.startProcess(
             executable: session.executable.path,
             args: session.arguments + [session.fileURL.path],

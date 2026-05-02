@@ -19,7 +19,6 @@ struct WorkspaceView: View {
             if let session = quickEditSession {
                 Divider()
                 QuickEditPane(session: session, onExit: onQuickEditExit)
-                    .frame(minHeight: 200, idealHeight: 320, maxHeight: 480)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }

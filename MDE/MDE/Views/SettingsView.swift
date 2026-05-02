@@ -127,7 +127,22 @@ struct SettingsView: View {
                     }
                 }
 
-                Text("Used by File → Quick Edit (⌘E) — runs inside an embedded terminal pane. TUI editors only; GUI editors with a `--wait` flag belong in the External Editor setting above.")
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("Terminal Font Size")
+                        Spacer()
+                        Text("\(Int(appModel.settings.terminalFontSize)) pt")
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Slider(
+                        value: terminalFontSizeBinding,
+                        in: AppSettings.minimumTerminalFontSize...AppSettings.maximumTerminalFontSize,
+                        step: 1
+                    )
+                }
+
+                Text("Used by File → Quick Edit (⌘E) — runs inside an embedded terminal pane. TUI editors only; GUI editors with a `--wait` flag belong in the External Editor setting above. The pane height scales with the terminal font size.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -172,6 +187,16 @@ struct SettingsView: View {
         Binding(
             get: { appModel.settings.internalEditorCommand },
             set: { appModel.settings.internalEditorCommand = $0 }
+        )
+    }
+
+    private var terminalFontSizeBinding: Binding<Double> {
+        Binding(
+            get: { appModel.settings.terminalFontSize },
+            set: {
+                appModel.settings.terminalFontSize = $0
+                appModel.settings.clampValues()
+            }
         )
     }
 

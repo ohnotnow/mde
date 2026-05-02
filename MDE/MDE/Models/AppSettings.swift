@@ -7,12 +7,16 @@ struct AppSettings: Equatable {
     static let defaultFontSize = 18.0
     static let minimumLineHeight = 1.1
     static let maximumLineHeight = 2.2
+    static let minimumTerminalFontSize = 10.0
+    static let maximumTerminalFontSize = 32.0
+    static let defaultTerminalFontSize = 14.0
 
     var readerFontSize: Double = AppSettings.defaultFontSize
     var readerFontFamily: ReaderFontFamily = .serif
     var readerLineHeight: Double = 1.5
     var externalEditor: ExternalEditorPreference = .systemDefault
     var internalEditorCommand: String = ""
+    var terminalFontSize: Double = AppSettings.defaultTerminalFontSize
 
     mutating func increaseFontSize() {
         readerFontSize = min(readerFontSize + 1, Self.maximumFontSize)
@@ -29,6 +33,7 @@ struct AppSettings: Equatable {
     mutating func clampValues() {
         readerFontSize = min(max(readerFontSize, Self.minimumFontSize), Self.maximumFontSize)
         readerLineHeight = min(max(readerLineHeight, Self.minimumLineHeight), Self.maximumLineHeight)
+        terminalFontSize = min(max(terminalFontSize, Self.minimumTerminalFontSize), Self.maximumTerminalFontSize)
     }
 }
 
@@ -39,6 +44,7 @@ extension AppSettings {
         static let readerLineHeight = "settings.readerLineHeight"
         static let externalEditor = "settings.externalEditor"
         static let internalEditorCommand = "settings.internalEditorCommand"
+        static let terminalFontSize = "settings.terminalFontSize"
         static let legacyEditorFontSize = "settings.editorFontSize"
         static let legacyEditorFontFamily = "settings.editorFontFamily"
         static let legacyEditorLineHeight = "settings.editorLineHeight"
@@ -76,6 +82,10 @@ extension AppSettings {
             settings.internalEditorCommand = command
         }
 
+        if defaults.object(forKey: StorageKey.terminalFontSize) != nil {
+            settings.terminalFontSize = defaults.double(forKey: StorageKey.terminalFontSize)
+        }
+
         settings.clampValues()
         return settings
     }
@@ -98,6 +108,8 @@ extension AppSettings {
         } else {
             defaults.set(trimmedCommand, forKey: StorageKey.internalEditorCommand)
         }
+
+        defaults.set(terminalFontSize, forKey: StorageKey.terminalFontSize)
     }
 }
 

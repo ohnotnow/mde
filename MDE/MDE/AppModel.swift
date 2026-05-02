@@ -129,7 +129,8 @@ final class AppModel: ObservableObject {
             arguments: resolved.arguments,
             environment: makeEditorEnvironment(),
             fileURL: fileURL,
-            editorCommand: command
+            editorCommand: command,
+            fontSize: settings.terminalFontSize
         )
     }
 

@@ -268,6 +268,9 @@ final class KeyAwareScrollView: NSScrollView {
         guard let responder = window.firstResponder else { return false }
         if responder is NSText { return true }
         if responder is NSTextView { return true }
+        if let view = responder as? NSView, !view.isDescendant(of: self) {
+            return true
+        }
         return false
     }
 }
