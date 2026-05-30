@@ -12,7 +12,7 @@ struct AppSettings: Equatable {
     static let defaultTerminalFontSize = 14.0
 
     var readerFontSize: Double = AppSettings.defaultFontSize
-    var readerFontFamily: ReaderFontFamily = .serif
+    var readerFontFamily: ReaderFontFamily = .system
     var readerLineHeight: Double = 1.5
     var externalEditor: ExternalEditorPreference = .systemDefault
     var internalEditorCommand: String = ""

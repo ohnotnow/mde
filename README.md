@@ -6,7 +6,7 @@ A native macOS Markdown viewer. Double-click a `.md` file in Finder, get a nicel
 
 ## What it does
 
-`mde` opens Markdown files (`.md`, `.markdown`, `.mdown`, `.mkd`) and renders them for reading: decent typography, syntax-highlighted code blocks, and YAML front-matter pulled out and shown as metadata above the body instead of being mangled into a giant heading. It is a viewer, not an editor. Files open via Finder, drag-and-drop, the standard Open dialog, or Open Recent.
+`mde` opens Markdown files (`.md`, `.markdown`, `.mdown`, `.mkd`) and renders them for reading: decent typography, GitHub-flavoured Markdown, and YAML front-matter pulled out and shown as metadata above the body instead of being mangled into a giant heading. It is a viewer, not an editor. Files open via Finder, drag-and-drop, the standard Open dialog, or Open Recent.
 
 For quick fixes without leaving the window, `⌘E` opens the current file in an inline terminal running your preferred TUI editor (`vim`, `nvim`, `nano`, etc.) and `⇧⌘E` hands it off to a GUI editor (VS Code, Cursor, Sublime, etc.). Both are configured in **mde → Settings…**, and the preview auto-reloads when the editor saves.
 
@@ -66,7 +66,7 @@ open MDE/MDE.xcodeproj
 
 ### 4. Wait for Swift Package Manager to resolve dependencies
 
-The first time you open the project, Xcode will fetch the Swift package dependencies (MarkdownUI, Highlightr, and their transitive deps). You will see a small progress indicator at the top of the window saying *"Resolving Package Graph"* or similar. This usually takes 30 seconds to a couple of minutes depending on your connection. Wait for it to finish before doing anything else.
+The first time you open the project, Xcode will fetch the Swift package dependencies (swift-cmark, SwiftTerm, and their transitive deps). You will see a small progress indicator at the top of the window saying *"Resolving Package Graph"* or similar. This usually takes 30 seconds to a couple of minutes depending on your connection. Wait for it to finish before doing anything else.
 
 If you ever see "Package resolution failed", try **File → Packages → Reset Package Caches**.
 
@@ -121,18 +121,19 @@ Settings are persisted in `UserDefaults`, so they survive restarts.
 
 ## How the rendering works
 
-Body Markdown is rendered by [MarkdownUI](https://github.com/gonzalezreal/swift-markdown-ui) on top of [cmark-gfm](https://github.com/swiftlang/swift-cmark). Pure SwiftUI, no WebKit. Code blocks are highlighted by [Highlightr](https://github.com/raspu/Highlightr), which is a JavaScriptCore wrapper around highlight.js. I've pinned it to the Nord theme on a `#2E3440` panel background, so the code panel looks the same in light and dark mode.
+Body Markdown is converted to HTML by [cmark-gfm](https://github.com/swiftlang/swift-cmark) — GitHub-flavoured, so tables, strikethrough, autolinks and task lists all work — and then displayed in a `WKWebView` styled after the University of Glasgow house style. Handing layout and scrolling to the web engine is what keeps long documents fast. Code blocks are shown as plain monospaced panels (no syntax highlighting).
 
-YAML front-matter at the top of a file (`--- … ---`) gets pulled out and rendered as subdued monospaced metadata above the body, with a dashed separator below. CommonMark has no concept of front-matter, so otherwise it parses as a giant H2 heading, which looks awful.
+Because a viewer opens files from anywhere, the web view is deliberately locked down: page JavaScript is disabled, and the document is blocked from loading any remote (`http`/`https`) content. So a hostile file can neither run scripts nor quietly phone home when you open it. The trade-off is that remote images and badges won't render; local images (relative to the file) do.
+
+YAML front-matter at the top of a file (`--- … ---`) gets pulled out and rendered as a subdued monospaced block above the body. CommonMark has no concept of front-matter, so otherwise it parses as a giant H2 heading, which looks awful.
 
 ## Dependencies
 
 Two direct Swift Package Manager dependencies, plus their transitive ones. Xcode resolves them all on first open:
 
-- [gonzalezreal/swift-markdown-ui](https://github.com/gonzalezreal/swift-markdown-ui) — Markdown rendering
-- [raspu/Highlightr](https://github.com/raspu/Highlightr) — syntax highlighting
-- [swiftlang/swift-cmark](https://github.com/swiftlang/swift-cmark) — the cmark-gfm parser, pulled in transitively by MarkdownUI
-- [gonzalezreal/NetworkImage](https://github.com/gonzalezreal/NetworkImage) — image loading, also transitive
+- [swiftlang/swift-cmark](https://github.com/swiftlang/swift-cmark) — the cmark-gfm parser, used to convert Markdown to HTML
+- [migueldeicaza/SwiftTerm](https://github.com/migueldeicaza/SwiftTerm) — the embedded terminal that powers `⌘E` quick edits
+- [apple/swift-argument-parser](https://github.com/apple/swift-argument-parser) — pulled in transitively by swift-cmark
 
 Versions are pinned in `MDE/MDE.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`.
 

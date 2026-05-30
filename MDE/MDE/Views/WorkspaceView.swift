@@ -26,13 +26,6 @@ struct WorkspaceView: View {
         .frame(minWidth: 920, minHeight: 640)
         .background(WindowConfigurationView(document: document))
         .focusedSceneValue(\.readerNavigator, navigator)
-        .onAppear {
-            navigator.sourceText = document.bodyText
-        }
-        .onChange(of: document.bodyText) { _, newValue in
-            navigator.sourceText = newValue
-            navigator.resetMatches()
-        }
         .dropDestination(for: URL.self) { items, _ in
             guard let url = items.first else {
                 return false
