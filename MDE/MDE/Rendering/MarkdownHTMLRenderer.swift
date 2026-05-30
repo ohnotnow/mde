@@ -138,6 +138,7 @@ extension ReaderHTMLDocument {
     /// inside an app window, and given a `.front-matter` rule for the YAML block.
     static let styleSheet = """
     :root {
+      color-scheme: light dark;
       --uofg-blue: #011451;
       --uofg-dark-blue: #005398;
       --uofg-blue-80: #344374;
@@ -275,16 +276,27 @@ extension ReaderHTMLDocument {
     hr { border: none; border-top: 1px solid var(--uofg-rule); margin: var(--space-9) 0; max-width: var(--measure); }
 
     blockquote {
-      margin: var(--space-6) 0; padding: var(--space-5) var(--space-6);
-      background: var(--uofg-panel); border: 1px solid var(--uofg-panel-edge);
-      color: var(--uofg-ink); font-size: 1rem; position: relative;
+      margin: var(--space-7) 0;
+      padding-left: 2.6rem;
+      position: relative;
+      color: var(--uofg-text);
+      font-style: italic;
+      font-size: 1.1rem;
+    }
+    blockquote::before {
+      content: "“";
+      position: absolute;
+      left: 0;
+      top: -0.08em;
+      font-family: Georgia, "Times New Roman", Times, serif;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 3.2rem;
+      line-height: 1;
+      color: var(--uofg-arrow);
     }
     blockquote p { margin-bottom: var(--space-3); }
     blockquote p:last-child { margin-bottom: 0; }
-    blockquote::before {
-      content: ""; display: block; width: 28px; height: 2px;
-      background: var(--uofg-arrow); margin-bottom: var(--space-3);
-    }
 
     code, pre, kbd, samp { font-family: var(--font-mono); font-size: 0.92em; }
     code { background: var(--uofg-blue-10); padding: 0.1em 0.35em; border-radius: 2px; color: var(--uofg-blue); }
@@ -330,6 +342,35 @@ extension ReaderHTMLDocument {
 
     @media (prefers-reduced-motion: reduce) {
       * { transition: none !important; animation: none !important; }
+    }
+
+    /* Dark mode. UofG has no official dark palette, so this is a sympathetic
+       invention: the same navy/coral identity flipped onto a dark surface.
+       Driven entirely by the system setting via prefers-color-scheme, so it
+       switches live when the user toggles appearance. */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --uofg-blue: #8fb3e6;
+        --uofg-dark-blue: #82b4f0;
+        --uofg-blue-10: #242b38;
+        --uofg-blue-60: #8089a0;
+
+        --uofg-ink: #f2f4f9;
+        --uofg-text: #d4d8e1;
+        --uofg-muted: #9298a5;
+        --uofg-rule: #363b45;
+        --uofg-panel: #1e222a;
+        --uofg-panel-edge: #313742;
+
+        --uofg-paper: #15171c;
+        --uofg-arrow: #e2685f;
+      }
+      /* --uofg-blue is now a light foreground colour, so the few places that
+         used it as a dark *background* need their navy put back explicitly. */
+      .page-head { background: #122a5c; }
+      .page-heading { color: #ffffff; }
+      thead th { background: #1a3563; color: #ffffff; }
+      ::selection { color: #15171c; }
     }
     """
 }
