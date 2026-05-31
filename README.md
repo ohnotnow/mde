@@ -32,82 +32,42 @@ The app isn't Apple-notarised (notarisation needs a paid Apple Developer account
 
 If you'd rather build from source, read on.
 
-## Prerequisites
+## Build from source
+
+You only need the Xcode **Command Line Tools** — not the full Xcode app.
+
+### Prerequisites
 
 - A Mac running macOS 14 (Sonoma) or later
-- Xcode 15 or later, free from the Mac App Store
+- The Command Line Tools — run `xcode-select --install` if you don't already have them
 
-That's it. No Homebrew, no command-line tools, no extra package managers. Xcode brings everything else with it.
+The Command Line Tools provide the Swift compiler and `swift build`, which is all that's needed — no full Xcode (that multi-gigabyte download), no Homebrew, no extra package managers. If you *do* have the full Xcode installed, it works too.
 
-## Getting started
-
-If you have never used Xcode before, this section walks through every step. Apologies if some of it is obvious.
-
-### 1. Install Xcode
-
-Open the Mac App Store, search for **Xcode**, install it. It is a hefty download (10+ GB), so put the kettle on. The first time you launch Xcode it will prompt you to install some additional components — say yes to all of those.
-
-### 2. Clone the repository
-
-In Terminal:
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/ohnotnow/mde.git
 cd mde
 ```
 
-### 3. Open the project in Xcode
-
-The Xcode project file lives one level down. Either double-click `MDE/MDE.xcodeproj` in Finder, or from Terminal:
-
-```bash
-open MDE/MDE.xcodeproj
-```
-
-### 4. Wait for Swift Package Manager to resolve dependencies
-
-The first time you open the project, Xcode will fetch the Swift package dependencies (swift-cmark, SwiftTerm, and their transitive deps). You will see a small progress indicator at the top of the window saying *"Resolving Package Graph"* or similar. This usually takes 30 seconds to a couple of minutes depending on your connection. Wait for it to finish before doing anything else.
-
-If you ever see "Package resolution failed", try **File → Packages → Reset Package Caches**.
-
-### 5. Run for development
-
-Hit `Cmd-R` (or click the Play button at the top-left). Xcode will compile the project and launch `mde` in a development window. Open a Markdown file from File → Open, drag one onto the window, or use Open Recent.
-
-This is fine for trying it out, but the app only runs while Xcode is alive. To get a real Applications-folder copy, build a release.
-
-## Building a release version for /Applications
-
-When you want to use `mde` like any other Mac app:
-
-### 1. Switch the build scheme to Release
-
-At the top of the Xcode window there is a scheme selector that says something like *"MDE > My Mac"*. Click on **MDE** (the left-hand part) and choose **Edit Scheme…**. In the dialog that appears, select **Run** in the left sidebar, then change **Build Configuration** from *Debug* to **Release**. Click Close.
-
 ### 2. Build
 
-Hit `Cmd-B`. Xcode will compile an optimised, debug-symbol-stripped build.
+```bash
+./build.sh
+```
 
-### 3. Find the built app
+This compiles an optimised release build with Swift Package Manager, assembles `MDE.app`, and ad-hoc signs it. The first build fetches the Swift package dependencies (swift-cmark, SwiftTerm), which takes a minute or two depending on your connection. The finished app lands at `build/MDE.app`.
 
-In Xcode's left sidebar (the Project Navigator), expand the **Products** group at the bottom. You will see `MDE.app`. Right-click it and choose **Show in Finder**.
+### 3. Run it, or move it to /Applications
 
-### 4. Drag to /Applications
+```bash
+open build/MDE.app                  # just launch it
+cp -R build/MDE.app /Applications/  # or keep it around like any other app
+```
 
-Drag `MDE.app` from that Finder window into your Applications folder. You can now launch it like any other app.
+Because *you* built it, there's no Gatekeeper *"cannot be opened"* hurdle — that only applies to apps **downloaded** from the internet. Building it yourself sidesteps the whole thing.
 
-### 5. The first-launch Gatekeeper hurdle
-
-Because this app is not Apple-notarised (notarisation requires a paid Apple Developer account), the first time you double-click `MDE.app` from Applications, macOS will refuse to open it and say *"MDE.app cannot be opened because Apple cannot check it for malicious software"*.
-
-The one-time workaround:
-
-1. Open Applications in Finder
-2. Right-click on `MDE.app`
-3. Choose **Open** from the context menu
-4. macOS will show a similar warning but with an **Open** button — click that
-
-After this, you can double-click the app normally forever. macOS only enforces the check on first launch.
+> **Prefer an IDE?** There's no `.xcodeproj` to open. Instead, `open Package.swift` opens the package directly in Xcode (if you have the full app installed), where `Cmd-R` builds and runs it.
 
 ## What's in the Settings dialog
 
@@ -129,17 +89,17 @@ YAML front-matter at the top of a file (`--- … ---`) gets pulled out and rende
 
 ## Dependencies
 
-Two direct Swift Package Manager dependencies, plus their transitive ones. Xcode resolves them all on first open:
+Two direct Swift Package Manager dependencies, plus one transitive. `swift build` (which `build.sh` runs) resolves them all on the first build:
 
 - [swiftlang/swift-cmark](https://github.com/swiftlang/swift-cmark) — the cmark-gfm parser, used to convert Markdown to HTML
 - [migueldeicaza/SwiftTerm](https://github.com/migueldeicaza/SwiftTerm) — the embedded terminal that powers `⌘E` quick edits
 - [apple/swift-argument-parser](https://github.com/apple/swift-argument-parser) — pulled in transitively by swift-cmark
 
-Versions are pinned in `MDE/MDE.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`.
+Versions are pinned in `Package.resolved` at the repository root.
 
 ## Contributing
 
-This is a personal project I'm using to learn Swift and AppKit, so I'm not actively soliciting contributions. That said — if you spot something obviously wrong, or want to use the codebase as a starting point for your own viewer, fork away. To get a development environment going, follow the *Getting started* section above. There is no test target yet.
+This is a personal project I'm using to learn Swift and AppKit, so I'm not actively soliciting contributions. That said — if you spot something obviously wrong, or want to use the codebase as a starting point for your own viewer, fork away. To get a development environment going, follow the *Build from source* section above. There is no test target yet.
 
 ## Licence
 
