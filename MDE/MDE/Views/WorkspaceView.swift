@@ -59,8 +59,14 @@ struct WorkspaceView: View {
     }
 
     private var readerPane: some View {
-        MarkdownReaderView(document: document, settings: settings, navigator: navigator)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        MarkdownReaderView(
+            document: document,
+            settings: settings,
+            navigator: navigator,
+            onOpenFile: onOpenDroppedFile,
+            onDropTargetingChange: { isDropTargeted = $0 }
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
