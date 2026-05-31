@@ -325,9 +325,36 @@ extension ReaderHTMLDocument {
     .footnotes ol { padding-left: 0; }
     .footnotes hr { display: none; }
 
-    input[type="checkbox"] { margin-right: 0.4em; accent-color: var(--uofg-blue); transform: translateY(1px); }
+    /* GFM task lists: drop the arrow bullet and draw our own checkbox. A native
+       <input> won't take ::before/::after and doesn't inherit font-size (so
+       width:1em stays ~13px) — appearance:none + a rem size + an SVG tick
+       sidesteps both, scales with the reader's font, and stays legible in dark. */
     ul > li:has(> input[type="checkbox"])::before { content: none; }
-    ul > li:has(> input[type="checkbox"]) { padding-left: 0; }
+    ul > li:has(> input[type="checkbox"]) {
+      padding-left: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 0.55em;
+    }
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      flex: 0 0 auto;
+      width: 1.05rem;
+      height: 1.05rem;
+      margin: 0;
+      border: 1.5px solid var(--uofg-blue-40);
+      border-radius: 4px;
+      background: var(--uofg-paper);
+    }
+    input[type="checkbox"]:checked {
+      background-color: var(--uofg-dark-blue);
+      border-color: var(--uofg-dark-blue);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+      background-size: 0.8rem;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
     ::selection { background: var(--uofg-highlight); color: var(--uofg-blue); }
 
