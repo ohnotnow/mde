@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# mde - open Markdown in MDE.app from the terminal.
+#
+# Usage:
+#   mde <file.md> [more.md ...]     open a file (or several)
+#   some-command | mde [title]      render piped Markdown, optionally named
+#
+# Piped input is written to a temp file under $TMPDIR/mde-pipes so MDE (a
+# file-based viewer) can open it. The filename doubles as the window title:
+# an explicit title argument wins, then the first content line of the input
+# (YAML front-matter skipped, heading markers stripped), and if neither
+# yields anything usable we live with the random temp name. macOS sweeps
+# $TMPDIR periodically, so the files clean themselves up.
+#
+# MDE_APP overrides which app to open, e.g. MDE_APP="$PWD/build/MDE.app"
+# to point at a development build.
+
+app="${MDE_APP:-MDE}"
+pipe_dir="${TMPDIR:-/tmp}/mde-pipes"
+
+if [[ -t 0 ]]; then
+  if [[ $# -eq 0 ]]; then
+    echo "usage: mde <file.md> [more.md ...]" >&2
+    echo "       some-command | mde [title]" >&2
+    exit 64
+  fi
+  exec open -a "$app" "$@"
+fi
+
+mkdir -p "$pipe_dir"
+tmp_file="$(mktemp "$pipe_dir/piped-XXXXXX")"
+trap 'rm -f "$tmp_file"' EXIT
+cat > "$tmp_file"
+
+if [[ ! -s "$tmp_file" ]]; then
+  echo "mde: no input on stdin" >&2
+  exit 1
+fi
+
+title="${1:-}"
+if [[ -z "$title" ]]; then
+  title="$(awk '
+    NR == 1 && $0 == "---" { in_front_matter = 1; next }
+    in_front_matter { if ($0 == "---") in_front_matter = 0; next }
+    NF { print; exit }
+  ' "$tmp_file")"
+fi
+
+# Strip heading markers, replace filesystem-hostile characters, cap the
+# length, and tidy stray dots/dashes/spaces off the edges (a leading dot
+# would hide the file).
+title="$(printf '%s' "$title" | sed -E 's/^[[:space:]#]+//; s/[^[:alnum:] ._-]+/-/g')"
+title="${title:0:30}"
+title="$(printf '%s' "$title" | sed -E 's/^[[:space:].-]+//; s/[[:space:].-]+$//')"
+title="${title%.md}"
+
+if [[ -n "$title" ]]; then
+  target="$pipe_dir/$title.md"
+else
+  target="$tmp_file.md"
+fi
+
+mv "$tmp_file" "$target"
+trap - EXIT
+exec open -a "$app" "$target"

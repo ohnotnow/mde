@@ -69,6 +69,26 @@ Because *you* built it, there's no Gatekeeper *"cannot be opened"* hurdle — th
 
 > **Prefer an IDE?** There's no `.xcodeproj` to open. Instead, `open Package.swift` opens the package directly in Xcode (if you have the full app installed), where `Cmd-R` builds and runs it.
 
+## Piping to mde from the terminal
+
+`Scripts/mde` is a small launcher script for terminal use. Copy it onto your `PATH`:
+
+```bash
+install -m 755 Scripts/mde ~/.local/bin/mde
+```
+
+Then:
+
+```bash
+mde notes.md                  # open a file, same as double-clicking it
+some-command | mde            # render whatever arrives on stdin
+some-command | mde ait-42     # same, but call the window "ait-42"
+```
+
+Piped input is written to a temp file under `$TMPDIR/mde-pipes` and opened from there, so there is nothing to clean up by hand (macOS sweeps `$TMPDIR` on its own). The filename doubles as the window title: an explicit argument wins; otherwise the first content line of the document is used (front-matter skipped, `#` markers stripped, capped at 30 characters); and if the input offers nothing usable, you get the random temp name and can live with it.
+
+Set `MDE_APP` to point the script at a different build, e.g. `MDE_APP="$PWD/build/MDE.app" some-command | mde`.
+
 ## What's in the Settings dialog
 
 Open **mde → Settings…** (or `Cmd-,`):
